@@ -1,0 +1,302 @@
+[
+  {
+    "user_input": "Peyton Manning Super Bowl passing stats",
+    "retrieved_context_preview": [
+      "Manning finished the year with a career-low 67.9 passer rating, throwing for 2,249 yards and nine touchdowns, with 17 in...",
+      "Super Bowl 50 featured numerous records from individuals and teams. Denver won despite being massively outgained in tota...",
+      "The Broncos defeated the Pittsburgh Steelers in the divisional round, 23\u201316, by scoring 11 points in the final three min..."
+    ],
+    "response": "Based on the provided context, here are Peyton Manning's passing stats from **Super Bowl 50**:\n\n- **Completions/Attempts:** 13 of 23\n- **Passing Yards:** 141\n- **Touchdowns:** 0\n- **Interceptions:** 1\n- **Passer Rating:** 56.6\n\nHis top receiver was **Emmanuel Sanders**, who caught six passes for 83 yards.",
+    "reference": "Peyton Manning completed 13 of 23 passes for 141 yards, with zero touchdowns and one interception in the Super Bowl."
+  },
+  {
+    "user_input": "how did Peyton Manning perform in the 2015 NFL season",
+    "retrieved_context_preview": [
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co...",
+      "Manning finished the year with a career-low 67.9 passer rating, throwing for 2,249 yards and nine touchdowns, with 17 in...",
+      "The Broncos defeated the Pittsburgh Steelers in the divisional round, 23\u201316, by scoring 11 points in the final three min..."
+    ],
+    "response": "Based on the provided context, Peyton Manning had a notably poor 2015 NFL regular season. Here are the key details:\n\n**Health Issues:**\n- He dealt with a plantar fasciitis injury in his heel since the summer\n- In Week 10, he suffered a partial tear of the plantar fasciitis in his left foot, which led to him being benched\n\n**Statistics:**\n- He finished with a career-low **67.9 passer rating**\n- Threw for **2,249 yards** and only **9 touchdowns**\n- Led the NFL in interceptions with **17**\n\n**Other Notable Points:**\n- Despite a 7\u20130 team start, his performance was his worst statistical season since his rookie year with the Indianapolis Colts in 1998\n- He was benched after throwing four interceptions in Week 10 in favor of backup Brock Osweiler\n- He did set the NFL's all-time record for **career passing yards** in the Week 10 game before being benched\n- He returned in Week 17 and led the Broncos to a 27\u201320 win over the San Diego Chargers, reclaiming his starting position for the playoffs\n- His age (turning 39 in the off-season) was also cited as a contributing factor to his decline",
+    "reference": "Peyton Manning had his worst statistical season since his 1998 rookie year, struggling with a plantar fasciitis injury and leading the NFL in interceptions. He was eventually benched in favor of backup Brock Osweiler before reclaiming the starting position for the playoffs."
+  },
+  {
+    "user_input": "Peyton Manning interceptions 2015 season stats",
+    "retrieved_context_preview": [
+      "The Broncos defeated the Pittsburgh Steelers in the divisional round, 23\u201316, by scoring 11 points in the final three min...",
+      "Manning finished the year with a career-low 67.9 passer rating, throwing for 2,249 yards and nine touchdowns, with 17 in...",
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co..."
+    ],
+    "response": "Based on the provided context, Peyton Manning's 2015 regular season interception stats were as follows:\n\n- **17 interceptions** thrown during the regular season, which led the NFL\n- He had a career-low **67.9 passer rating** that season\n- He threw for **2,249 yards** and only **9 touchdowns**\n\nIt is also noted that **despite his interception problems during the regular season, Manning did not throw any interceptions in their two playoff games**.",
+    "reference": "Based on the source, Peyton Manning threw **17 interceptions** during the 2015 season, along with 9 touchdowns and 2,249 passing yards, finishing with a career-low 67.9 passer rating."
+  },
+  {
+    "user_input": "Norman invasion Byzantine Empire after First Crusade Bohemond",
+    "retrieved_context_preview": [
+      "In 1096, Crusaders passing by the siege of Amalfi were joined by Bohemond of Taranto and his nephew Tancred with an army...",
+      "A few years after the First Crusade, in 1107, the Normans under the command of Bohemond, Robert's son, landed in Valona ...",
+      "The legendary religious zeal of the Normans was exercised in religious wars long before the First Crusade carved out a N..."
+    ],
+    "response": "## Norman Invasion of the Byzantine Empire After the First Crusade: Bohemond's Campaign\n\nBased on the provided context, a few years after the First Crusade, **in 1107**, Bohemond (Robert's son) led a Norman campaign against the Byzantine Empire with the following key details:\n\n### The Invasion\n- The Normans **landed in Valona** and **besieged Dyrrachium**, using the most sophisticated military equipment of the time\n- They occupied several territories including:\n  - **Petrela**\n  - The citadel of **Mili** at the banks of the river Deabolis\n  - **Gllavenica (Ballsh)**\n  - **Kanina and Jericho**\n\n### Albanian Alliance\n- The **Albanians sided with the Normans**, as they were dissatisfied with the heavy taxes imposed by the Byzantines\n- With Albanian help, the Normans **secured the Arbanon passes** and opened their way to **Dibra**\n\n### Outcome\nDespite initial successes, the campaign ultimately **failed** due to:\n- Lack of supplies\n- Disease\n- Byzantine resistance\n\nAs a result, Bohemond was forced to **retreat** and sign a **peace treaty with the Byzantines** in the city of **Deabolis**.",
+    "reference": "After the First Crusade, in 1107, Bohemond led the Normans in an invasion, landing at Valona and besieging Dyrrachium, but ultimately was forced to retreat due to lack of supplies, disease, and Byzantine resistance, signing a peace treaty at Deabolis."
+  },
+  {
+    "user_input": "who were the first Norman families in the Mediterranean",
+    "retrieved_context_preview": [
+      "From these bases, the Normans eventually captured Sicily and Malta from the Saracens, under the leadership of the famous...",
+      "The Normans thereafter adopted the growing feudal doctrines of the rest of France, and worked them into a functional hie...",
+      "Normans came into Scotland, building castles and founding noble families who would provide some future kings, such as Ro..."
+    ],
+    "response": "Based on the provided context, the two most prominent Norman families to first arrive in the Mediterranean were:\n\n1. **The Drengot family** \u2013 of whom **Rainulf Drengot** received the county of Aversa, described as \"the first Norman toehold in the south,\" from Duke Sergius IV of Naples in **1030**.\n\n2. **The Hauteville family** (descendants of Tancred of Hauteville) \u2013 who achieved princely rank by proclaiming Guaimar IV of Salerno \"Duke of Apulia and Calabria,\" with their elected leader **William Iron Arm** being awarded the title of count at Melfi. The Hauteville family later produced notable figures such as Robert Guiscard and Roger the Great Count, who captured Sicily and Malta from the Saracens.",
+    "reference": "The two most prominent Norman families to arrive in the Mediterranean were the descendants of **Tancred of Hauteville** and the **Drengot family**. Rainulf Drengot received the county of Aversa, the first Norman toehold in the south, from Duke Sergius IV of Naples in 1030."
+  },
+  {
+    "user_input": "when did Imperial County get added to Southern California",
+    "retrieved_context_preview": [
+      "In 1900, the Los Angeles Times defined southern California as including \"the seven counties of Los Angeles, San Bernardi...",
+      "Traveling south on Interstate 5, the main gap to continued urbanization is Camp Pendleton. The cities and communities al...",
+      "Southern California, often abbreviated SoCal, is a geographic and cultural region that generally comprises California's ..."
+    ],
+    "response": "Based on the provided context, **Imperial County was added to the list of Southern California counties by the Los Angeles Times in **1999**. The context states: \"In 1999, the Times added a newer county\u2014Imperial\u2014to that list,\" referring to the original list of seven counties defined in 1900.",
+    "reference": "According to the Los Angeles Times, Imperial County was added to the definition of Southern California in **1999**."
+  },
+  {
+    "user_input": "Luther letter to Melanchthon 1521",
+    "retrieved_context_preview": [
+      "In this work, one of his most emphatic statements on faith, he argued that every good work designed to attract God's fav...",
+      "A piece of paper was later found on which Luther had written his last statement. The statement was in Latin, apart from ...",
+      "On 31 October 1517, Luther wrote to his bishop, Albert of Mainz, protesting the sale of indulgences. He enclosed in his ..."
+    ],
+    "response": "Based on the provided context, on **1 August 1521**, Luther wrote to Melanchthon stating:\n\n> *\"Be a sinner, and let your sins be strong, but let your trust in Christ be stronger, and rejoice in Christ who is the victor over sin, death, and the world. We will commit sins while we are here, for this life is not a place where justice resides.\"*\n\nThe letter addressed the theme of **faith and sin**, arguing that trust in Christ must be stronger than one's sins, and acknowledging that humans will inevitably sin during their earthly lives. This was consistent with Luther's broader theological position that God's grace alone \u2014 not good works \u2014 can make humans just.",
+    "reference": "In a letter dated 1 August 1521, Luther wrote to Melanchthon urging him to embrace sinfulness while placing stronger trust in Christ, who is the victor over sin, death, and the world. Luther acknowledged that humans will commit sins in this life, as it is not a place where justice resides."
+  },
+  {
+    "user_input": "Westinghouse vs General Electric AC power bid",
+    "retrieved_context_preview": [
+      "The mid 1890s saw the conglomerate General Electric, backed by financier J. P. Morgan, involved in takeover attempts and...",
+      "In 1893 Richard Dean Adams, who headed up the Niagara Falls Cataract Construction Company sought Tesla's opinion on what...",
+      "In July 1888, Brown and Peck negotiated a licensing deal with George Westinghouse for Tesla's polyphase induction motor ..."
+    ],
+    "response": "## Westinghouse vs. General Electric: AC Power Bid\n\nBased on the provided context, there is a notable instance of direct competition between Westinghouse and General Electric in bidding for AC power contracts:\n\n### 1893 World's Columbian Exposition (Chicago)\n- **George Westinghouse won the bid** to light the 1893 World's Columbian Exposition in Chicago using alternating current.\n- He beat out a **General Electric bid by one million dollars**.\n- At the exposition, Westinghouse demonstrated the **safety, reliability, and efficiency** of a fully integrated alternating current system to the American public.\n- The event was considered a **key moment in the history of AC power**, showcasing the \"Tesla Polyphase System.\"\n\n### Niagara Falls Power Project\n- Following Westinghouse's successful demonstration at the Exposition, a **contract to build a two-phase AC generating system at Niagara Falls was awarded to Westinghouse Electric**.\n- However, a **separate contract to build the AC distribution system was awarded to General Electric**.\n\n### Broader Context\n- The two companies were also engaged in **patent battles and takeover attempts** in the mid-1890s, ultimately signing a **patent-sharing agreement in 1896**, though Westinghouse remained financially strained from the conflict.",
+    "reference": "George Westinghouse won the bid to light the 1893 World's Columbian Exposition in Chicago with alternating current, beating out General Electric's bid by one million dollars."
+  },
+  {
+    "user_input": "Isaac Bashevis Singer quotes about Warsaw",
+    "retrieved_context_preview": [
+      "Tamara de Lempicka was a famous artist born in Warsaw. She was born Maria G\u00f3rska in Warsaw to wealthy parents and in 191...",
+      "One of the most famous people born in Warsaw was Maria Sk\u0142odowska-Curie, who achieved international recognition for her ...",
+      "There are also many places commemorating the heroic history of Warsaw. Pawiak, an infamous German Gestapo prison now occ..."
+    ],
+    "response": "Based on the provided context, Isaac Bashevis Singer expressed deep love for Warsaw, which was described as his \"beloved city.\" He is quoted as saying:\n\n> *\"Warsaw has just now been destroyed. No one will ever see the Warsaw I knew. Let me just write about it. Let this Warsaw not disappear forever.\"*\n\nThis quote reflects his desire to preserve the memory of Warsaw through his writing, as the city he knew had been destroyed.",
+    "reference": "According to the source, Isaac Bashevis Singer said of Warsaw: *\"Warsaw has just now been destroyed. No one will ever see the Warsaw I knew. Let me just write about it. Let this Warsaw not disappear forever.\"* He considered Warsaw his beloved city, which he described in many of his novels."
+  },
+  {
+    "user_input": "how much did a 30 second Super Bowl 50 commercial cost",
+    "retrieved_context_preview": [
+      "CBS broadcast Super Bowl 50 in the U.S., and charged an average of $5 million for a 30-second commercial during the game...",
+      "CBS set the base rate for a 30-second advertisement at $5,000,000, a record high price for a Super Bowl ad. As of Januar...",
+      "For the first time, the Super Bowl 50 Host Committee and the NFL have openly sought disabled veteran and lesbian, gay, b..."
+    ],
+    "response": "Based on the provided context, a 30-second commercial during Super Bowl 50 cost an average of **$5 million** (with CBS setting the base rate at **$5,000,000**), which was described as a record high price for a Super Bowl ad.",
+    "reference": "A 30-second commercial during Super Bowl 50 cost an average of **$5 million**."
+  },
+  {
+    "user_input": "Gary Kubiak first season as Broncos head coach",
+    "retrieved_context_preview": [
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co...",
+      "With Rivera having been a linebacker with the Chicago Bears in Super Bowl XX, and Kubiak replacing Elway at the end of t...",
+      "The Broncos took an early lead in Super Bowl 50 and never trailed. Newton was limited by Denver's defense, which sacked ..."
+    ],
+    "response": "Based on the provided context, here is what is described about Gary Kubiak's first season as the Denver Broncos head coach:\n\n- Kubiak was hired as the new head coach after the mutual parting with John Fox.\n- Under Kubiak, the Broncos planned to install a **run-oriented offense with zone blocking** to blend with Peyton Manning's shotgun passing skills.\n- The team struggled with **numerous changes and injuries to the offensive line**.\n- Manning had his **worst statistical season since his rookie year** (1998), due to a plantar fasciitis injury and his age (he turned 39 in the 2015 off-season).\n- Despite a **7\u20130 start**, Manning led the NFL in interceptions.\n- In **Week 10**, Manning suffered a partial tear of the plantar fasciitis, set the NFL all-time record for career passing yards, but was benched after throwing four interceptions in favor of **Brock Osweiler**.\n- Manning returned in **Week 17**, leading the Broncos to a 27\u201320 win over the San Diego Chargers, clinching the **number one overall AFC seed**.\n- The Broncos finished with a **12\u20134 regular season record** and earned **home-field advantage** throughout the AFC playoffs, ultimately winning **Super Bowl 50**.",
+    "reference": "In Gary Kubiak's first season as Broncos head coach, the team started 7\u20130 but faced struggles with offensive line changes and injuries, Manning's worst statistical season since 1998, and finished with a 12\u20134 record, earning the number one overall AFC seed with home-field advantage throughout the AFC playoffs."
+  },
+  {
+    "user_input": "Denver Broncos coaching changes after 2014 playoff loss",
+    "retrieved_context_preview": [
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co...",
+      "Denver took the opening kickoff and started out strong with Peyton Manning completing an 18-yard pass to tight end Owen ...",
+      "The Broncos defeated the Pittsburgh Steelers in the divisional round, 23\u201316, by scoring 11 points in the final three min..."
+    ],
+    "response": "Based on the provided context, following their loss in the divisional round of the previous season's playoffs, the Denver Broncos made the following coaching changes:\n\n1. **Mutual parting with head coach John Fox** \u2013 Fox had won four divisional championships in his four years as Broncos head coach.\n2. **Hiring of Gary Kubiak** as the new head coach \u2013 Under Kubiak, the Broncos planned to install a **run-oriented offense with zone blocking**, intended to blend with quarterback Peyton Manning's shotgun passing skills.\n\nAdditionally, **Wade Phillips** served as the defensive coordinator under the new coaching staff, leading a defense that ranked **number one in total yards allowed, passing yards allowed, and sacks**.",
+    "reference": "After their divisional round playoff loss, the Denver Broncos mutually parted ways with head coach John Fox and hired Gary Kubiak as the new head coach."
+  },
+  {
+    "user_input": "Art Deco painter from Poland",
+    "retrieved_context_preview": [
+      "Tamara de Lempicka was a famous artist born in Warsaw. She was born Maria G\u00f3rska in Warsaw to wealthy parents and in 191...",
+      "One of the most famous people born in Warsaw was Maria Sk\u0142odowska-Curie, who achieved international recognition for her ...",
+      "The 17th century Royal Ujazd\u00f3w Castle currently houses Centre for Contemporary Art, with some permanent and temporary ex..."
+    ],
+    "response": "Based on the provided context, **Tamara de Lempicka** was the Art Deco painter from Poland. Born **Maria G\u00f3rska in Warsaw** to wealthy parents, she married Polish lawyer Tadeusz \u0141empicki in 1916. According to the context, *\"Better than anyone else she represented the Art Deco style in painting and art.\"*",
+    "reference": "Tamara de Lempicka, born Maria G\u00f3rska in Warsaw, was a famous artist who better than anyone else represented the Art Deco style in painting and art."
+  },
+  {
+    "user_input": "Super Bowl 50 Carolina Panthers second quarter scoring drive",
+    "retrieved_context_preview": [
+      "After a punt from both teams, Carolina got on track with a 9-play, 73-yard scoring drive. Newton completed 4 of 4 passes...",
+      "The Panthers beat the Seattle Seahawks in the divisional round, running up a 31\u20130 halftime lead and then holding off a f...",
+      "The Panthers seemed primed to score on their opening drive of the second half when Newton completed a 45-yard pass to Te..."
+    ],
+    "response": "Based on the provided context, in the second quarter, the Carolina Panthers executed a **9-play, 73-yard scoring drive**. During the drive, Cam Newton completed **4 of 4 passes for 51 yards** and rushed twice for **25 yards**. The drive was finished by **Jonathan Stewart with a 1-yard touchdown run**, cutting the score to **10\u20137** with 11:28 remaining in the second quarter.",
+    "reference": "Carolina's 9-play, 73-yard scoring drive in the second quarter featured Cam Newton completing 4 of 4 passes for 51 yards and rushing twice for 25 yards, with Jonathan Stewart finishing it on a 1-yard touchdown run to cut Denver's lead to 10\u20137 with 11:28 remaining in the quarter."
+  },
+  {
+    "user_input": "William Iron Arm Hauteville family Apulia Calabria",
+    "retrieved_context_preview": [
+      "The two most prominent Norman families to arrive in the Mediterranean were descendants of Tancred of Hauteville and the ...",
+      "From these bases, the Normans eventually captured Sicily and Malta from the Saracens, under the leadership of the famous...",
+      "One of the claimants of the English throne opposing William the Conqueror, Edgar Atheling, eventually fled to Scotland. ..."
+    ],
+    "response": "Based on the provided context, **William Iron Arm** was the elected leader of the **Hauteville family** who was awarded the **title of count** by prince Guaimar IV of Salerno in his capital of **Melfi**, after Guaimar was proclaimed \"**Duke of Apulia and Calabria**\" by the Hauteville family.\n\nAdditionally, William Iron Arm is noted for building a **citadel at Squillace**, which stands as part of the Norman legacy in the region.\n\nThe Hauteville family's presence in **Apulia and Calabria** was further formalized in **1047**, when Emperor Henry III legally ennobled the Hauteville leader **Drogo** with the title of *\"dux et magister Italiae comesque Normannorum totius Apuliae et Calabriae\"* (\"Duke and Master of Italy and Count of the Normans of all **Apulia and Calabria**\").",
+    "reference": "William Iron Arm was the elected leader of the Hauteville family, who was awarded the title of count by Prince Guaimar IV of Salerno in his capital of Melfi, after Guaimar was proclaimed \"Duke of Apulia and Calabria.\""
+  },
+  {
+    "user_input": "how did Normans come to control southern Italy",
+    "retrieved_context_preview": [
+      "Soon after the Normans began to enter Italy, they entered the Byzantine Empire and then Armenia, fighting against the Pe...",
+      "Opportunistic bands of Normans successfully established a foothold in Southern Italy (the Mezzogiorno). Probably as the ...",
+      "From these bases, the Normans eventually captured Sicily and Malta from the Saracens, under the leadership of the famous..."
+    ],
+    "response": "Based on the provided context, the Normans came to control southern Italy through a gradual process:\n\n1. **Initial Entry as Mercenaries/Warriors**: Normans first entered the region (the Mezzogiorno) as warriors around 1017 at the latest. Their involvement was partly inspired by returning pilgrims' stories. As early as 999, Norman pilgrims fought off a Saracen attack at Salerno, impressing local rulers.\n\n2. **Recruited by Lombard Rebels**: In 1016, Norman pilgrims at Monte Gargano were approached by **Melus of Bari**, a Lombard nobleman and rebel, who persuaded them to return with more warriors to help overthrow Byzantine rule. Initially, Lombards encouraged Normans to come south to act against the Byzantines.\n\n3. **Establishing a Foothold**: Through these opportunities, **opportunistic bands of Normans successfully established a foothold in Southern Italy**.\n\n4. **Expansion Under Key Leaders**: From these bases, the Normans expanded their control, eventually capturing **Sicily and Malta from the Saracens** under the leadership of **Robert Guiscard** and his brother **Roger the Great Count**.\n\n5. **Formation of the Kingdom**: Roger's son, **Roger II of Sicily**, was crowned king in 1130, establishing the **Kingdom of Sicily**, which lasted until 1194.",
+    "reference": "The Normans gained a foothold in Southern Italy through opportunistic bands of warriors, initially drawn there through returning pilgrims' stories. They were recruited by local leaders such as Melus of Bari to help fight against Byzantine rule, gradually establishing their presence in the region known as the Mezzogiorno."
+  },
+  {
+    "user_input": "Tesla coil history radio wave development",
+    "retrieved_context_preview": [
+      "Tesla's theories on the possibility of the transmission by radio waves go back as far as lectures and demonstrations in ...",
+      "On 17 May 1899, Tesla moved to Colorado Springs, where he would have room for his high-voltage, high-frequency experimen...",
+      "Tesla went on to pursue his ideas of wireless lighting and electricity distribution in his high-voltage, high-frequency ..."
+    ],
+    "response": "## Tesla Coil and Radio Wave Development\n\nBased on the provided context, the Tesla Coil played a notable role in the development of radio waves and related technologies:\n\n- **Early Theoretical Groundwork (1893):** Tesla's theories on the transmission of radio waves date back to **lectures and demonstrations in 1893** in St. Louis, Missouri, the Franklin Institute in Philadelphia, and the National Electric Light Association. These demonstrations and principles were widely reported in various media outlets.\n\n- **Tesla Coil as a Development Tool:** The context states that *\"many devices such as the Tesla Coil were used in the further development of radio.\"*\n\n- **Patent on the Tesla Coil (1891):** Tesla patented the Tesla Coil in **1891**, the same year he demonstrated wireless lamp lighting at his New York laboratories.\n\n- **Additional Application:** The Tesla Coil was also used in Tesla's **X-ray research**, where he developed a vacuum tube that worked from the output of the Tesla Coil to produce what is now known as *bremsstrahlung* (braking radiation).\n\n- **Radio Patent Disputes:** Tesla's radio-related patents were upheld in **1903**, and in **1943**, the U.S. Supreme Court restored Tesla's prior patents, though the court clarified this had no bearing on Marconi's claim as the first to achieve radio transmission.",
+    "reference": "The Tesla Coil was one of many devices used in the further development of radio, stemming from Tesla's early theories and demonstrations on radio wave transmission dating back to 1893 in cities such as St. Louis and Philadelphia."
+  },
+  {
+    "user_input": "Manning interceptions playoff performance Denver",
+    "retrieved_context_preview": [
+      "The Broncos defeated the Pittsburgh Steelers in the divisional round, 23\u201316, by scoring 11 points in the final three min...",
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co...",
+      "Manning finished the year with a career-low 67.9 passer rating, throwing for 2,249 yards and nine touchdowns, with 17 in..."
+    ],
+    "response": "Based on the provided context, Manning had a notably strong performance regarding interceptions during the playoffs. Despite leading the NFL in interceptions during the regular season (17 interceptions) and having his worst statistical season in years, **Manning did not throw any interceptions in Denver's two playoff games** before the Super Bowl (against the Pittsburgh Steelers and New England Patriots).\n\nHowever, in **Super Bowl 50**, Manning did throw **one interception**, finishing the game 13 of 23 for 141 yards with one interception and zero touchdowns.",
+    "reference": "Despite having problems with interceptions during the regular season, Manning did not throw any interceptions in Denver's two playoff games."
+  },
+  {
+    "user_input": "how many megaregions are in the United States",
+    "retrieved_context_preview": [
+      "The 8- and 10-county definitions are not used for the greater Southern California Megaregion, one of the 11 megaregions ...",
+      "Southern California consists of one Combined Statistical Area, eight Metropolitan Statistical Areas, one international m...",
+      "Southern California includes the heavily built-up urban area stretching along the Pacific coast from Ventura, through th..."
+    ],
+    "response": "Based on the provided context, there are **11 megaregions** in the United States. This is mentioned in the context where it refers to \"the greater Southern California Megaregion, one of the 11 megaregions of the United States.\"",
+    "reference": "There are **11 megaregions** in the United States."
+  },
+  {
+    "user_input": "Jordan Norwood fair catch confusion punt return",
+    "retrieved_context_preview": [
+      "After a punt from both teams, Carolina got on track with a 9-play, 73-yard scoring drive. Newton completed 4 of 4 passes...",
+      "Concerns were raised over whether Levi's Stadium's field was of a high enough quality to host a Super Bowl; during the i...",
+      "After each team punted, Panthers quarterback Cam Newton appeared to complete a 24-yard pass Jerricho Cotchery, but the c..."
+    ],
+    "response": "Based on the provided context, during Super Bowl 50, Broncos receiver **Jordan Norwood** received a short **28-yard punt** from Brad Nortman while surrounded by Panthers players. However, **none of the Panthers players attempted to make a tackle**, apparently believing Norwood had called a **fair catch** \u2014 which he had **not** done.\n\nWith no resistance around him, Norwood took off and returned the punt **61 yards** \u2014 a **Super Bowl record** \u2014 before being dragged down by Mario Addison at the Panthers' 14-yard line.\n\nFollowing the excellent field position, Denver's offense could not reach the end zone, and Brandon McManus kicked a **33-yard field goal**, extending the Broncos' lead to **13\u20137**.",
+    "reference": "Jordan Norwood received a short punt but had not called a fair catch, yet the Panthers players made no attempt to tackle him, apparently believing he had. Norwood then returned the punt 61 yards, setting a Super Bowl record, before being brought down at the Panthers' 14-yard line."
+  },
+  {
+    "user_input": "Luther's view on the soul after death",
+    "retrieved_context_preview": [
+      "The Lutheran theologian Franz Pieper observed that Luther's teaching about the state of the Christian's soul after death...",
+      "In contrast to the views of John Calvin and Philipp Melanchthon, throughout his life Luther maintained that it was not f...",
+      "The Ten Commandments, and the beginnings of the renewed life of Christians accorded to them by the sacrament of baptism,..."
+    ],
+    "response": "## Luther's View on the Soul After Death\n\nBased on the provided context, Luther held a distinctive position on the state of the soul after death that differed from other reformers and later Lutheran theologians.\n\n### Soul Sleep\nLuther maintained throughout his life that **it was not false doctrine to believe that a Christian's soul sleeps after it is separated from the body at death**. This view set him apart from both **John Calvin and Philipp Melanchthon**, and was notably different from later Lutheran theologians such as **Johann Gerhard**.\n\n### Rejection of Torment and Purgatory\nLuther rejected the idea that souls face torments after death, stating:\n> *\"It is enough for us to know that souls do not leave their bodies to be threatened by the torments and punishments of hell, but enter a prepared bedchamber in which they sleep in peace.\"*\n\nHe also **rejected the existence of Purgatory**, which involved souls undergoing penitential suffering after death.\n\n### Personal Identity and Heaven\nLuther affirmed the **continuity of personal identity beyond death**, and in his *Smalcald Articles*, described the saints as currently residing **\"in their graves and in heaven.\"**\n\n### A Note of Complexity\nHis *Commentary on Genesis* contains a passage suggesting \"the soul does not sleep but wakes and experiences visions,\" though scholars like Gottfried Fritschel argued this passage actually referred to a man's sleep **in this present life**, not the afterlife.",
+    "reference": "According to Franz Pieper, Luther's teaching about the state of the Christian's soul after death differed from that of later Lutheran theologians such as Johann Gerhard. Lessing had similarly noted this distinction in his 1755 analysis of Lutheran orthodoxy on the issue."
+  },
+  {
+    "user_input": "Denver Broncos offensive stats 2015 season",
+    "retrieved_context_preview": [
+      "Following their loss in the divisional round of the previous season's playoffs, the Denver Broncos underwent numerous co...",
+      "The Broncos' defense ranked first in the NFL yards allowed (4,530) for the first time in franchise history, and fourth i...",
+      "Denver took the opening kickoff and started out strong with Peyton Manning completing an 18-yard pass to tight end Owen ..."
+    ],
+    "response": "Based on the provided context, there is **limited specific offensive statistics** for the Denver Broncos' 2015 season. The context focuses primarily on their defensive performance and game-by-game narratives. Here is what can be gathered about the offense:\n\n- **Peyton Manning** had his **worst statistical season since his rookie year (1998)**, largely due to a **plantar fasciitis injury** in his heel\n- Manning **led the NFL in interceptions** during the regular season\n- Manning suffered a **partial tear of the plantar fasciitis in Week 10**, after which backup **Brock Osweiler** took over as starter for most of the remainder of the season\n- Manning **set the NFL all-time record for career passing yards** in the Week 10 game\n- The offense struggled due to **numerous changes and injuries to the offensive line**\n- The team planned to run a **zone-blocking, run-oriented offense** under Gary Kubiak\n- Despite offensive struggles, the Broncos finished **12\u20134**\n\nThe context makes clear that it was the **defense, not the offense**, that carried the team, but **detailed offensive statistics** (passing yards totals, rushing yards, touchdowns, etc.) for the full 2015 season are **not provided in the context**.",
+    "reference": "In the 2015 season, the Denver Broncos' offense ranked 19th in scoring with 355 points, with Demaryius Thomas leading receivers with 105 receptions for 1,304 yards, and C.J. Anderson leading rushers with 863 yards and seven touchdowns. Manning posted a career-low 67.9 passer rating with 17 interceptions, while backup Osweiler performed better with an 86.4 rating, 10 touchdowns, and only six interceptions."
+  },
+  {
+    "user_input": "who is responsible for education in Australia",
+    "retrieved_context_preview": [
+      "Education in Australia is primarily the responsibility of the individual states and territories. Generally, education in...",
+      "There are many similarities and differences among teachers around the world. In almost all countries teachers are educat...",
+      "The functions of the teacher's colleges may include setting out clear standards of practice, providing for the ongoing e..."
+    ],
+    "response": "Based on the provided context, **education in Australia is primarily the responsibility of the individual states and territories**.",
+    "reference": "Education in Australia is primarily the responsibility of the individual states and territories."
+  },
+  {
+    "user_input": "platoon system primary education advantages",
+    "retrieved_context_preview": [
+      "This is true throughout most of the United States as well. However, alternative approaches for primary education do exis...",
+      "Perhaps the most significant difference between primary school and secondary school teaching is the relationship between...",
+      "Research shows that student motivation and attitudes towards school are closely linked to student-teacher relationships...."
+    ],
+    "response": "## Platoon System in Primary Education: Advantages\n\nBased on the provided context, the **platoon system** offers the following advantages:\n\n1. **Subject Specialization**: Students learn from teachers who **specialize in one subject** and who tend to be **more knowledgeable** in that specific area than a teacher who teaches many subjects.\n\n2. **Peer Security**: Despite moving between different specialist teachers, students still derive a **strong sense of security** by staying with the **same group of peers** for all classes.\n\nThe context describes the platoon system as an alternative approach to primary education where *\"a group of students together in one class moves from one specialist to another for every subject,\"* combining the benefits of specialized instruction while maintaining social consistency among the student group.",
+    "reference": "The platoon system allows students to learn from subject-specialist teachers who are more knowledgeable in their specific area, while students still maintain a sense of security by remaining with the same group of peers throughout all classes."
+  },
+  {
+    "user_input": "Luther Swiss German theologians eucharist disagreement 1529",
+    "retrieved_context_preview": [
+      "In October 1529, Philip I, Landgrave of Hesse, convoked an assembly of German and Swiss theologians at the Marburg Collo...",
+      "In January 1519, at Altenburg in Saxony, the papal nuncio Karl von Miltitz adopted a more conciliatory approach. Luther ...",
+      "The theologians, including Zwingli, Melanchthon, Martin Bucer, and Johannes Oecolampadius, differed on the significance ..."
+    ],
+    "response": "Based on the provided context, in **October 1529**, Philip I, Landgrave of Hesse, convoked the **Marburg Colloquy**, bringing together German and Swiss theologians to establish doctrinal unity among emerging Protestant states. While agreement was reached on **14 out of 15 points**, the exception was the **nature of the Eucharist** (the Lord's Supper).\n\nThe key disagreement centered on the words of Jesus at the Last Supper. **Luther** insisted on the **Real Presence** of Christ's body and blood in the consecrated bread and wine (which he called the *sacramental union*), while theologians such as **Zwingli, Melanchthon, Martin Bucer, and Johannes Oecolampadius** believed God to be only **spiritually or symbolically present**.\n\nA notable point of contention was Zwingli's denial of Jesus' ability to be in more than one place at a time, whereas Luther stressed the **omnipresence of Christ's human nature**. The debate became confrontational at times \u2014 Zwingli cited John 6:63 (\"The flesh profiteth nothing\"), saying it \"breaks your neck,\" to which Luther retorted sharply. Luther famously wrote **\"Hoc est corpus meum\"** (\"This is my body\") in chalk on the table to reinforce his firm stance.\n\nDespite this disagreement, the Marburg Colloquy paved the way for the **Augsburg Confession (1530)** and the formation of the **Schmalkaldic League (1531)**, though the Swiss cities did not sign these agreements.",
+    "reference": "At the Marburg Colloquy in October 1529, German and Swiss theologians reached agreement on fourteen out of fifteen doctrinal points, with the sole exception being the nature of the Eucharist, which was a crucial issue for Luther."
+  },
+  {
+    "user_input": "George Maniaces Sicilian campaign 1038 Norman soldiers",
+    "retrieved_context_preview": [
+      "Soon after the Normans began to enter Italy, they entered the Byzantine Empire and then Armenia, fighting against the Pe...",
+      "Several families of Byzantine Greece were of Norman mercenary origin during the period of the Comnenian Restoration, whe...",
+      "Opportunistic bands of Normans successfully established a foothold in Southern Italy (the Mezzogiorno). Probably as the ..."
+    ],
+    "response": "Based on the provided context, the **Sicilian campaign of George Maniaces in 1038\u201340** included **Norman mercenaries** who were **prominent alongside Varangian and Lombard contingents**.\n\nHowever, the context notes some uncertainty about these Norman soldiers:\n\n- There is **debate whether the Normans in Greek service actually were from Norman Italy**, and it seems likely **only a few came from there**.\n- It is also **unknown how many of the \"Franks\"** (as the Byzantines called them) **were Normans and not other Frenchmen**.\n\nAdditionally, the context mentions a lasting legacy of these Norman soldiers: **the group of Albanian clans known as the Maniakates were descended from Normans who served under George Maniaces in the Sicilian expedition of 1038**, becoming one of several families of Byzantine Greece with Norman mercenary origins during the period of the Comnenian Restoration.",
+    "reference": "Based on the source, Norman mercenaries were prominent alongside Varangian and Lombard contingents in the Sicilian campaign of George Maniaces in 1038\u201340, though it remains debated whether these Normans in Greek service actually came from Norman Italy, with only a few likely having originated there."
+  },
+  {
+    "user_input": "where is Nikola Tesla buried or cremated",
+    "retrieved_context_preview": [
+      "In 1952, following pressure from Tesla's nephew, Sava Kosanovi\u0107, Tesla's entire estate was shipped to Belgrade in 80 tru...",
+      "On 10 January 1943, New York City mayor Fiorello La Guardia read a eulogy written by Slovene-American author Louis Adami...",
+      "On 7 January 1943, at the age of 86, Tesla died alone in room 3327 of the New Yorker Hotel. His body was later found by ..."
+    ],
+    "response": "Based on the provided context, Tesla's body was taken to **Ferncliff Cemetery in Ardsley, New York, where it was cremated**. His ashes were later transported to Belgrade in 1957 by Charlotte Muzar, and they are currently **displayed in a gold-plated sphere on a marble pedestal in the Nikola Tesla Museum** in Belgrade. So while Tesla was cremated in Ardsley, New York, his ashes ultimately came to rest in Belgrade.",
+    "reference": "According to the source, Tesla's body was taken to **Ferncliff Cemetery in Ardsley, New York, where it was cremated**."
+  },
+  {
+    "user_input": "longest punt return in Super Bowl history",
+    "retrieved_context_preview": [
+      "After each team punted, Panthers quarterback Cam Newton appeared to complete a 24-yard pass Jerricho Cotchery, but the c...",
+      "After a punt from both teams, Carolina got on track with a 9-play, 73-yard scoring drive. Newton completed 4 of 4 passes...",
+      "This was the first Super Bowl to feature a quarterback on both teams who was the #1 pick in their draft classes. Manning..."
+    ],
+    "response": "Based on the provided context, the longest punt return in Super Bowl history was **Jordan Norwood's 61-yard return** in Super Bowl 50, which set a new record, surpassing the previous record of **45 yards set by John Taylor in Super Bowl XXIII**.",
+    "reference": "Based on the source, the longest punt return in Super Bowl history was **61 yards**, made by Broncos receiver Jordan Norwood after Panthers players failed to tackle him, believing he had called a fair catch."
+  },
+  {
+    "user_input": "what is co-teaching in education",
+    "retrieved_context_preview": [
+      "Co-teaching has also become a new trend amongst educational institutions. Co-teaching is defined as two or more teachers...",
+      "The objective is typically accomplished through either an informal or formal approach to learning, including a course of...",
+      "This is true throughout most of the United States as well. However, alternative approaches for primary education do exis..."
+    ],
+    "response": "## Co-Teaching in Education\n\nBased on the provided context, **co-teaching** is defined as **two or more teachers working harmoniously to fulfill the needs of every student in the classroom**.\n\n### Key Characteristics:\n\n- **Focus on student learning**: Co-teaching focuses the student on learning by providing a **social networking support** that allows them to reach their full cognitive potential.\n- **Collaborative approach**: Co-teachers work **in sync with one another** to create a climate of learning.\n- **Growing trend**: Co-teaching has become a **new trend** amongst educational institutions.\n\nIn essence, co-teaching is a collaborative model where multiple teachers share the responsibility of teaching and supporting all students in a classroom setting.",
+    "reference": "Co-teaching in education is defined as two or more teachers working harmoniously together to fulfill the needs of every student in the classroom. It focuses on supporting students' learning by providing a social networking support system that allows them to reach their full cognitive potential."
+  },
+  {
+    "user_input": "what happened in the second half of Super Bowl 50",
+    "retrieved_context_preview": [
+      "The Broncos took an early lead in Super Bowl 50 and never trailed. Newton was limited by Denver's defense, which sacked ...",
+      "Super Bowl 50 featured numerous records from individuals and teams. Denver won despite being massively outgained in tota...",
+      "In honor of the 50th Super Bowl, the pregame ceremony featured the on-field introduction of 39 of the 43 previous Super ..."
+    ],
+    "response": "The provided context does not contain detailed information specifically about the second half of Super Bowl 50. The context gives overall game statistics and some specific plays (such as Von Miller's fumble recovery touchdown that gave Denver a 10\u20130 lead, which occurred in what appears to be the first half), and the final score of **Denver Broncos 24, Carolina Panthers 10**, but it does not provide a detailed, half-by-half breakdown of the game's events.",
+    "reference": "In the second half, the Panthers struggled to convert promising drives into points, missing a field goal and throwing an interception, while the Broncos capitalized with a McManus field goal to extend their lead to 16\u20137. Denver's defense and opportunistic plays, including a T.J. Ward interception (despite a fumble recovered by Trevathan), helped the Broncos maintain possession and momentum."
+  }
+]

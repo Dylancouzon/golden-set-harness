@@ -1,0 +1,1202 @@
+[
+  {
+    "query_id": "q0",
+    "query_text": "how does education work in Australia",
+    "labels": {
+      "327": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q1",
+    "query_text": "who is responsible for education in Australia",
+    "labels": {
+      "327": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q2",
+    "query_text": "Australian school system primary secondary university",
+    "labels": {
+      "327": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q3",
+    "query_text": "what percentage of Warsaw's population was Jewish before World War II",
+    "labels": {
+      "57": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q4",
+    "query_text": "Warsaw demographic history ethnic minorities",
+    "labels": {
+      "57": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q5",
+    "query_text": "historical population statistics Warsaw 1897 census",
+    "labels": {
+      "57": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q6",
+    "query_text": "how did Peyton Manning perform in the 2015 NFL season",
+    "labels": {
+      "12": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q7",
+    "query_text": "Denver Broncos coaching changes after 2014 playoff loss",
+    "labels": {
+      "12": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q8",
+    "query_text": "Gary Kubiak first season as Broncos head coach",
+    "labels": {
+      "12": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q9",
+    "query_text": "Luther's interpretation of Daniel prophecy Reformation",
+    "labels": {
+      "379": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q10",
+    "query_text": "Martin Luther antichrist papacy 2 Thessalonians 2",
+    "labels": {
+      "379": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q11",
+    "query_text": "Little Horn Daniel 8 Reformation prophetic interpretation",
+    "labels": {
+      "379": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q12",
+    "query_text": "Norman architectural style characteristics",
+    "labels": {
+      "140": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q13",
+    "query_text": "medieval castle building techniques England Italy",
+    "labels": {
+      "140": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q14",
+    "query_text": "Romanesque architecture rounded arches history",
+    "labels": {
+      "140": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q15",
+    "query_text": "how did normans influence irish culture and society",
+    "labels": {
+      "125": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q16",
+    "query_text": "norman surnames in ireland and their origins",
+    "labels": {
+      "125": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q17",
+    "query_text": "first norman settlements in ireland location",
+    "labels": {
+      "125": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q18",
+    "query_text": "Norman mercenaries Byzantine Empire medieval",
+    "labels": {
+      "114": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q19",
+    "query_text": "Normans fighting Seljuk Turks and Pechenegs history",
+    "labels": {
+      "114": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q20",
+    "query_text": "George Maniaces Sicilian campaign 1038 Norman soldiers",
+    "labels": {
+      "114": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q21",
+    "query_text": "who were famous artists and writers born in Warsaw",
+    "labels": {
+      "71": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q22",
+    "query_text": "Isaac Bashevis Singer quotes about Warsaw",
+    "labels": {
+      "71": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q23",
+    "query_text": "Art Deco painter from Poland",
+    "labels": {
+      "71": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q24",
+    "query_text": "Luther faith and good works cannot earn God's grace",
+    "labels": {
+      "377": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q25",
+    "query_text": "\"be a sinner and let your sins be strong\" Luther letter",
+    "labels": {
+      "377": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q26",
+    "query_text": "Luther letter to Melanchthon 1521",
+    "labels": {
+      "377": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q27",
+    "query_text": "Carolina Panthers Super Bowl 50 stats",
+    "labels": {
+      "52": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q28",
+    "query_text": "Peyton Manning Super Bowl passing stats",
+    "labels": {
+      "52": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q29",
+    "query_text": "Von Miller Super Bowl 50 sacks and fumbles",
+    "labels": {
+      "52": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q30",
+    "query_text": "what did martin luther believe about indulgences",
+    "labels": {
+      "346": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q31",
+    "query_text": "Diet of Worms 1521 martin luther excommunication",
+    "labels": {
+      "346": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q32",
+    "query_text": "who was martin luther and what did he do in the protestant reformation",
+    "labels": {
+      "346": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q33",
+    "query_text": "what counties make up southern California",
+    "labels": {
+      "456": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q34",
+    "query_text": "Los Angeles Times definition of Southern California regions",
+    "labels": {
+      "456": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q35",
+    "query_text": "when did Imperial County get added to Southern California",
+    "labels": {
+      "456": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q36",
+    "query_text": "what is co-NP in computational complexity",
+    "labels": {
+      "279": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q37",
+    "query_text": "is NP equal to co-NP",
+    "labels": {
+      "279": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q38",
+    "query_text": "relationship between P NP and co-NP",
+    "labels": {
+      "279": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q39",
+    "query_text": "who performed at super bowl 50 halftime show",
+    "labels": {
+      "44": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q40",
+    "query_text": "coldplay beyonce bruno mars super bowl halftime",
+    "labels": {
+      "44": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q41",
+    "query_text": "which super bowl did coldplay headline the halftime show",
+    "labels": {
+      "44": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q42",
+    "query_text": "two teachers in one classroom model",
+    "labels": {
+      "302": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q43",
+    "query_text": "what is co-teaching in education",
+    "labels": {
+      "302": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q44",
+    "query_text": "benefits of co-teaching for students",
+    "labels": {
+      "302": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q45",
+    "query_text": "how many patents did Tesla have",
+    "labels": {
+      "216": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q46",
+    "query_text": "Tesla patents by country",
+    "labels": {
+      "216": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q47",
+    "query_text": "inventions Tesla never patented",
+    "labels": {
+      "216": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q48",
+    "query_text": "broncos comeback win over steelers divisional round",
+    "labels": {
+      "16": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q49",
+    "query_text": "how did broncos beat patriots AFC championship 2015",
+    "labels": {
+      "16": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q50",
+    "query_text": "Manning interceptions playoff performance Denver",
+    "labels": {
+      "16": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q51",
+    "query_text": "how did the Panthers beat the Seahawks in the playoffs",
+    "labels": {
+      "15": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q52",
+    "query_text": "Panthers vs Cardinals NFC Championship Game score",
+    "labels": {
+      "15": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q53",
+    "query_text": "Panthers 2015 playoff run results",
+    "labels": {
+      "15": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q54",
+    "query_text": "longest punt return in Super Bowl history",
+    "labels": {
+      "47": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q55",
+    "query_text": "Super Bowl 50 Carolina Panthers second quarter scoring drive",
+    "labels": {
+      "47": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q56",
+    "query_text": "Jordan Norwood fair catch confusion punt return",
+    "labels": {
+      "47": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q57",
+    "query_text": "who were the first Norman families in the Mediterranean",
+    "labels": {
+      "111": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q58",
+    "query_text": "Rainulf Drengot county of Aversa Norman history",
+    "labels": {
+      "111": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q59",
+    "query_text": "William Iron Arm Hauteville family Apulia Calabria",
+    "labels": {
+      "111": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q60",
+    "query_text": "who were the Albanians allied with during Bohemond's 1107 campaign",
+    "labels": {
+      "119": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q61",
+    "query_text": "Bohemond siege of Dyrrachium 1107",
+    "labels": {
+      "119": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q62",
+    "query_text": "Norman invasion Byzantine Empire after First Crusade Bohemond",
+    "labels": {
+      "119": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q63",
+    "query_text": "time and space complexity measures in computer science",
+    "labels": {
+      "258": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q64",
+    "query_text": "what are the Blum complexity axioms",
+    "labels": {
+      "258": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q65",
+    "query_text": "types of computational complexity resources examples",
+    "labels": {
+      "258": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q66",
+    "query_text": "how should teachers handle classroom discipline",
+    "labels": {
+      "308": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q67",
+    "query_text": "assertive teaching methods for managing student behavior",
+    "labels": {
+      "308": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q68",
+    "query_text": "what are acceptable forms of school punishment in North America",
+    "labels": {
+      "308": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q69",
+    "query_text": "who replaced peyton manning as broncos quarterback 2015",
+    "labels": {
+      "13": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q70",
+    "query_text": "Peyton Manning interceptions 2015 season stats",
+    "labels": {
+      "13": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q71",
+    "query_text": "Denver Broncos offensive stats 2015 season",
+    "labels": {
+      "13": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q72",
+    "query_text": "what is the history of computational complexity theory",
+    "labels": {
+      "287": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q73",
+    "query_text": "who proved NP-complete problems exist",
+    "labels": {
+      "287": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q74",
+    "query_text": "Richard Karp NP-complete combinatorial problems paper",
+    "labels": {
+      "287": 1
+    },
+    "source_doc_title": "Computational_complexity_theory"
+  },
+  {
+    "query_id": "q75",
+    "query_text": "Polish car factory history FSO Warsaw",
+    "labels": {
+      "101": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q76",
+    "query_text": "Daewoo car manufacturing Poland 1995",
+    "labels": {
+      "101": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q77",
+    "query_text": "FSO Polonez production and export countries",
+    "labels": {
+      "101": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q78",
+    "query_text": "what did Martin Luther rediscover that sparked the Reformation",
+    "labels": {
+      "366": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q79",
+    "query_text": "why was Luther against the sale of indulgences",
+    "labels": {
+      "366": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q80",
+    "query_text": "foundations of the Protestant Reformation Luther's beliefs",
+    "labels": {
+      "366": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q81",
+    "query_text": "Garda vetting requirements for teachers Ireland",
+    "labels": {
+      "332": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q82",
+    "query_text": "school staff background checks vetting process Ireland",
+    "labels": {
+      "332": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q83",
+    "query_text": "non-teaching school employees vetting voluntary roles Ireland",
+    "labels": {
+      "332": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q84",
+    "query_text": "who can grant forgiveness according to Luther",
+    "labels": {
+      "359": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q85",
+    "query_text": "do indulgences guarantee salvation",
+    "labels": {
+      "359": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q86",
+    "query_text": "what did Martin Luther say about indulgences and salvation",
+    "labels": {
+      "359": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q87",
+    "query_text": "what happened at Nikola Tesla's funeral",
+    "labels": {
+      "214": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q88",
+    "query_text": "Tesla funeral Cathedral of Saint John the Divine 1943",
+    "labels": {
+      "214": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q89",
+    "query_text": "where is Nikola Tesla buried or cremated",
+    "labels": {
+      "214": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q90",
+    "query_text": "who conquered Sicily from the Saracens",
+    "labels": {
+      "112": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q91",
+    "query_text": "Roger II of Sicily coronation 1130",
+    "labels": {
+      "112": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q92",
+    "query_text": "Norman castles and cathedrals in Sicily",
+    "labels": {
+      "112": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q93",
+    "query_text": "How did Tesla feel about Einstein's theory of relativity",
+    "labels": {
+      "229": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q94",
+    "query_text": "Tesla criticism of matter energy conversion",
+    "labels": {
+      "229": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q95",
+    "query_text": "Tesla views on relativity and Einstein disagreement",
+    "labels": {
+      "229": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q96",
+    "query_text": "how do students learn from subject specialists in elementary school",
+    "labels": {
+      "301": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q97",
+    "query_text": "platoon system primary education advantages",
+    "labels": {
+      "301": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q98",
+    "query_text": "alternative approaches to primary school classroom organization",
+    "labels": {
+      "301": 1
+    },
+    "source_doc_title": "Teacher"
+  },
+  {
+    "query_id": "q99",
+    "query_text": "Norman art and manuscript production 11th century",
+    "labels": {
+      "142": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q100",
+    "query_text": "Cluniac reform monasteries Normandy dukes",
+    "labels": {
+      "142": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q101",
+    "query_text": "illuminated manuscripts Norman scriptoria golden age",
+    "labels": {
+      "142": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q102",
+    "query_text": "what was the marburg colloquy about",
+    "labels": {
+      "414": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q103",
+    "query_text": "Luther Swiss German theologians eucharist disagreement 1529",
+    "labels": {
+      "414": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q104",
+    "query_text": "why did the Marburg Colloquy fail to reach full agreement",
+    "labels": {
+      "414": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q105",
+    "query_text": "Southern California megaregion boundaries",
+    "labels": {
+      "445": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q106",
+    "query_text": "does greater Southern California megaregion include Las Vegas and Tijuana",
+    "labels": {
+      "445": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q107",
+    "query_text": "how many megaregions are in the United States",
+    "labels": {
+      "445": 1
+    },
+    "source_doc_title": "Southern_California"
+  },
+  {
+    "query_id": "q108",
+    "query_text": "how much did a 30 second Super Bowl 50 commercial cost",
+    "labels": {
+      "3": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q109",
+    "query_text": "who performed at the Super Bowl 50 halftime show",
+    "labels": {
+      "3": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q110",
+    "query_text": "what was the most watched TV broadcast in US history",
+    "labels": {
+      "3": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q111",
+    "query_text": "who did Martin Luther marry",
+    "labels": {
+      "388": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q112",
+    "query_text": "how did nuns escape from Nimbschen convent",
+    "labels": {
+      "388": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q113",
+    "query_text": "Martin Luther age when he got married",
+    "labels": {
+      "388": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q114",
+    "query_text": "Luther's view on the soul after death",
+    "labels": {
+      "412": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q115",
+    "query_text": "Franz Pieper Lutheran theology soul sleep",
+    "labels": {
+      "412": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q116",
+    "query_text": "differences between Luther and Johann Gerhard afterlife beliefs",
+    "labels": {
+      "412": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q117",
+    "query_text": "how long did the warsaw uprising last",
+    "labels": {
+      "81": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q118",
+    "query_text": "Warsaw Uprising 1944 causes and outcome",
+    "labels": {
+      "81": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q119",
+    "query_text": "why did the polish home army rise up against germany before soviets arrived",
+    "labels": {
+      "81": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q120",
+    "query_text": "why did Luther write the 95 theses",
+    "labels": {
+      "357": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q121",
+    "query_text": "what was Luther's complaint about indulgences to the bishop of Mainz",
+    "labels": {
+      "357": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q122",
+    "query_text": "what does thesis 86 say about the pope and St Peter's basilica",
+    "labels": {
+      "357": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q123",
+    "query_text": "Tesla AC patent deal with Westinghouse 1897",
+    "labels": {
+      "174": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q124",
+    "query_text": "General Electric Westinghouse patent war 1890s",
+    "labels": {
+      "174": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q125",
+    "query_text": "how much did Westinghouse pay Tesla for AC patents",
+    "labels": {
+      "174": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q126",
+    "query_text": "what happened to Warsaw after World War 1",
+    "labels": {
+      "79": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q127",
+    "query_text": "Battle of Warsaw 1920 Polish Bolshevik War",
+    "labels": {
+      "79": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q128",
+    "query_text": "how did Poland gain independence from Germany 1918",
+    "labels": {
+      "79": 1
+    },
+    "source_doc_title": "Warsaw"
+  },
+  {
+    "query_id": "q129",
+    "query_text": "how did Normans come to control southern Italy",
+    "labels": {
+      "110": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q130",
+    "query_text": "Norman conquest Mezzogiorno history",
+    "labels": {
+      "110": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q131",
+    "query_text": "why did Normans settle in southern Italy Byzantine rule",
+    "labels": {
+      "110": 1
+    },
+    "source_doc_title": "Normans"
+  },
+  {
+    "query_id": "q132",
+    "query_text": "when did BSkyB switch to subscription only service",
+    "labels": {
+      "490": 1
+    },
+    "source_doc_title": "Sky_(United_Kingdom)"
+  },
+  {
+    "query_id": "q133",
+    "query_text": "Sky Multichannels launch 1993 history",
+    "labels": {
+      "490": 1
+    },
+    "source_doc_title": "Sky_(United_Kingdom)"
+  },
+  {
+    "query_id": "q134",
+    "query_text": "BSkyB analogue service closure date",
+    "labels": {
+      "490": 1
+    },
+    "source_doc_title": "Sky_(United_Kingdom)"
+  },
+  {
+    "query_id": "q135",
+    "query_text": "what did martin luther say about marriage before he got married",
+    "labels": {
+      "390": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q136",
+    "query_text": "luther clerical marriage reformation impact",
+    "labels": {
+      "390": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q137",
+    "query_text": "why did luther's wedding surprise melanchthon",
+    "labels": {
+      "390": 1
+    },
+    "source_doc_title": "Martin_Luther"
+  },
+  {
+    "query_id": "q138",
+    "query_text": "who lit the 1893 World's Fair Chicago",
+    "labels": {
+      "172": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q139",
+    "query_text": "Westinghouse vs General Electric AC power bid",
+    "labels": {
+      "172": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q140",
+    "query_text": "Tesla polyphase system Columbian Exposition demonstration",
+    "labels": {
+      "172": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q141",
+    "query_text": "how did Tesla lose Morgan's funding for Wardenclyffe Tower",
+    "labels": {
+      "194": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q142",
+    "query_text": "Tesla Morgan financial dispute Panic of 1901",
+    "labels": {
+      "194": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q143",
+    "query_text": "why did JP Morgan stop funding Tesla",
+    "labels": {
+      "194": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q144",
+    "query_text": "what happened in the second half of Super Bowl 50",
+    "labels": {
+      "49": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q145",
+    "query_text": "Panthers missed field goal against Broncos",
+    "labels": {
+      "49": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q146",
+    "query_text": "T.J. Ward interception fumble recovered by Trevathan",
+    "labels": {
+      "49": 1
+    },
+    "source_doc_title": "Super_Bowl_50"
+  },
+  {
+    "query_id": "q147",
+    "query_text": "wireless electricity transmission Tesla 1893",
+    "labels": {
+      "183": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q148",
+    "query_text": "Tesla coil history radio wave development",
+    "labels": {
+      "183": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  },
+  {
+    "query_id": "q149",
+    "query_text": "who pioneered radio wave transmission before Marconi",
+    "labels": {
+      "183": 1
+    },
+    "source_doc_title": "Nikola_Tesla"
+  }
+]

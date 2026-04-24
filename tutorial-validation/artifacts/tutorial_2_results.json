@@ -1,0 +1,19 @@
+{
+  "collection": "tutorial_validation_wiki",
+  "llm_model": "claude-sonnet-4-6",
+  "n_source_docs": 50,
+  "n_queries": 150,
+  "k": 10,
+  "metrics": {
+    "recall@10": 0.96,
+    "mrr": 0.7871,
+    "ndcg@10": 0.8299
+  },
+  "sample_queries": [
+    "how does education work in Australia",
+    "who is responsible for education in Australia",
+    "Australian school system primary secondary university",
+    "what percentage of Warsaw's population was Jewish before World War II",
+    "Warsaw demographic history ethnic minorities"
+  ]
+}
