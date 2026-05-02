@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+.streamlit/
+.pytest_cache/
+
+# results: large CSVs/JSONL — keep markdown reports & gap log
+results/*.jsonl
+results/*.csv
+results/*.json
+
+# HuggingFace datasets cache
+.cache/
+~/.cache/huggingface/
