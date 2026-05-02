@@ -20,14 +20,15 @@ def run_one(
     rerank: bool,
     generator_model: str,
     prompt_template: str,
+    hnsw_ef: int | None = None,
 ) -> dict[str, Any]:
     """Run one (query → retrieve → generate) cycle.
 
     Output keys:
-      - query_text:     the original question
-      - contexts:       list[str] — passage texts only (what the prompt sees)
-      - answer:         str — the generator's response
-      - hits:           list[dict] — full retrieval hits (text, score, doc_id)
+      - query_text:      the original question
+      - contexts:        list[str] — passage texts only (what the prompt sees)
+      - answer:          str — the generator's response
+      - hits:            list[dict] — full retrieval hits (text, score, doc_id)
       - generator_usage: token counts for the cost meter
     """
     hits = retrieve(
@@ -36,6 +37,7 @@ def run_one(
         k_rerank=k_rerank,
         hybrid=hybrid,
         rerank=rerank,
+        hnsw_ef=hnsw_ef,
     )
     contexts = [h["text"] for h in hits]
     answer, usage = generate(

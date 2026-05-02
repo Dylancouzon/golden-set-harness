@@ -82,17 +82,35 @@ def retrieve(
     *,
     hybrid: bool = True,
     rerank: bool = True,
+    hnsw_ef: int | None = None,
 ) -> list[dict[str, Any]]:
     """Retrieve k_rerank passages for `query`.
 
     With `hybrid=True`, runs dense + sparse prefetches and fuses with RRF.
     With `hybrid=False`, runs dense-only.
     With `rerank=True`, applies the cross-encoder to the prefetch result.
+
+    `hnsw_ef` controls search-time HNSW candidate breadth. None → server
+    default; higher = better recall, slower queries. Free to flip per call.
     """
     dense_vec = embed_dense(query)
 
+    # SearchParams flows down into both the prefetch and the top-level
+    # query when present. Skip building it when the caller passes None so
+    # we keep the request payload minimal in the default case.
+    search_params = (
+        models.SearchParams(hnsw_ef=hnsw_ef) if hnsw_ef is not None else None
+    )
+
     # Always include a dense prefetch. Sparse is optional.
-    prefetch = [models.Prefetch(query=dense_vec, using="dense", limit=k_retrieve)]
+    prefetch = [
+        models.Prefetch(
+            query=dense_vec,
+            using="dense",
+            limit=k_retrieve,
+            params=search_params,
+        )
+    ]
 
     if hybrid:
         sparse_vec = embed_sparse(query)
@@ -126,6 +144,7 @@ def retrieve(
             using="dense",
             limit=k_retrieve,
             with_payload=True,
+            search_params=search_params,
         ).points
 
     if rerank and results:
@@ -149,3 +168,46 @@ def retrieve(
         }
         for p in top
     ]
+
+
+# ----------------------------------------------------------------------------
+# HNSW tuning helpers (build-time)
+# ----------------------------------------------------------------------------
+# Used by the Streamlit sidebar's "Apply HNSW config" button. Updating m or
+# ef_construct triggers Qdrant to rebuild the HNSW graph in place — the
+# vectors stay, only the graph is regenerated. No re-embed cost. The
+# collection.status flips green → yellow during the rebuild.
+
+def update_dense_hnsw(m: int, ef_construct: int) -> None:
+    """Apply new HNSW build-time params to the 'dense' named vector."""
+    _qdrant().update_collection(
+        collection_name=settings.collection,
+        vectors_config={
+            "dense": models.VectorParamsDiff(
+                hnsw_config=models.HnswConfigDiff(m=m, ef_construct=ef_construct),
+            ),
+        },
+    )
+
+
+def collection_status() -> dict[str, Any]:
+    """Snapshot of the collection's optimisation state.
+
+    Returns:
+      {
+        "status":            "green" | "yellow" | "grey" | "red",
+        "points":            int — number of points (rows) in the collection
+        "indexed_vectors":   int — vectors currently in the HNSW index
+                                  (≈ 2 × points for our dense+sparse setup)
+        "optimizer_status":  "ok" | error string
+      }
+    """
+    info = _qdrant().get_collection(settings.collection)
+    opt_raw = info.optimizer_status
+    opt = "ok" if str(opt_raw) == "OptimizersStatus.OK" or getattr(opt_raw, "ok", None) else str(opt_raw)
+    return {
+        "status": str(info.status).split(".")[-1].lower(),
+        "points": int(info.points_count or 0),
+        "indexed_vectors": int(info.indexed_vectors_count or 0),
+        "optimizer_status": opt,
+    }

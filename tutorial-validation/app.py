@@ -26,6 +26,7 @@ from config import (
     settings,
 )
 from pipeline.pipeline import run_one
+from pipeline.retrieval import collection_status, update_dense_hnsw
 from pipeline.scoring import score_both_parallel
 
 GOLDEN_PATH = Path(__file__).parent / "results" / "golden_set.jsonl"
@@ -166,6 +167,28 @@ with st.sidebar:
     rerank = st.toggle("Cross-encoder rerank", value=True)
 
     st.divider()
+    st.subheader("HNSW tuning (dense vector)")
+    st.caption(
+        "search_hnsw_ef is per-query and free to flip. m and ef_construct "
+        "are build-time — clicking Apply rebuilds the graph in place "
+        "(no re-embed needed)."
+    )
+    search_hnsw_ef = st.slider(
+        "search_hnsw_ef (per-query)", 16, 512, settings.search_hnsw_ef, step=16,
+        help="Search-time HNSW candidate breadth. Higher = better recall, slower queries.",
+    )
+    hnsw_m = st.slider(
+        "m (graph degree)", 4, 64, settings.hnsw_m, step=2,
+        help="Outgoing edges per node. Higher = better recall, more RAM.",
+    )
+    hnsw_ef_construct = st.slider(
+        "ef_construct (build breadth)", 32, 512, settings.hnsw_ef_construct, step=16,
+        help="Candidate pool when adding nodes. Higher = better graph, slower ingest/re-index.",
+    )
+    apply_hnsw = st.button("Apply HNSW config", use_container_width=True)
+    hnsw_status_box = st.empty()
+
+    st.divider()
     st.subheader("CI gate thresholds")
     st.caption("Sliders re-bin existing scores live — no re-scoring.")
     faith_thresh = st.slider("Faithfulness threshold", 0.0, 1.0, 0.7, step=0.05)
@@ -206,6 +229,47 @@ if reset_clicked:
         st.session_state.pop(k, None)
     st.cache_data.clear()
     st.success("Caches cleared. Click Run sample.")
+
+# ----------------------------------------------------------------------------
+# HNSW: apply build-time changes + render live status
+# ----------------------------------------------------------------------------
+# Updating m / ef_construct is fire-and-forget — Qdrant rebuilds the dense
+# vector's HNSW graph in the background. We surface the rebuild progress in
+# the sidebar so the presenter can wait until status flips back to green
+# before kicking off a sample.
+
+if apply_hnsw:
+    try:
+        update_dense_hnsw(m=hnsw_m, ef_construct=hnsw_ef_construct)
+        st.toast(
+            f"HNSW update sent (m={hnsw_m}, ef_construct={hnsw_ef_construct}). "
+            "Status panel below will track the rebuild."
+        )
+    except Exception as exc:
+        st.error(f"HNSW update failed: {exc}")
+
+
+def _render_hnsw_status() -> None:
+    try:
+        s = collection_status()
+    except Exception as exc:
+        hnsw_status_box.warning(f"Status unavailable: {exc}")
+        return
+    label = {
+        "green": ("✅ ready (graph built)", "info"),
+        "yellow": ("⚙️ optimising / re-indexing", "warning"),
+        "grey": ("⏸ pending", "warning"),
+        "red": ("❌ error", "error"),
+    }.get(s["status"], (f"? {s['status']}", "info"))
+    msg = (
+        f"**Index status:** {label[0]}  \n"
+        f"{s['points']:,} points · {s['indexed_vectors']:,} vectors indexed  \n"
+        f"optimizer: {s['optimizer_status']}"
+    )
+    getattr(hnsw_status_box, label[1])(msg)
+
+
+_render_hnsw_status()
 
 # Sidebar cost meter (rendered after the run loop updates session state)
 cost_placeholder = st.sidebar.empty()
@@ -265,6 +329,7 @@ if run_clicked:
                     rerank=rerank,
                     generator_model=generator_model,
                     prompt_template=prompt_template,
+                    hnsw_ef=search_hnsw_ef,
                 )
             except Exception as exc:
                 st.error(f"Pipeline failed on qid={q['query_id']}: {exc}")

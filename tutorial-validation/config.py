@@ -47,6 +47,14 @@ class Settings:
     top_k_retrieve: int = field(default_factory=lambda: int(os.getenv("TOP_K_RETRIEVE", "50")))
     top_k_rerank: int = field(default_factory=lambda: int(os.getenv("TOP_K_RERANK", "10")))
 
+    # --- HNSW knobs ---
+    # Build-time (used at create_collection; changes require an in-place
+    # re-index via update_collection — no re-embed needed):
+    hnsw_m: int = field(default_factory=lambda: int(os.getenv("HNSW_M", "16")))
+    hnsw_ef_construct: int = field(default_factory=lambda: int(os.getenv("HNSW_EF_CONSTRUCT", "100")))
+    # Search-time (per query — change freely with no re-index):
+    search_hnsw_ef: int = field(default_factory=lambda: int(os.getenv("SEARCH_HNSW_EF", "128")))
+
 
 # Sidebar dropdowns. The same model can appear in both lists; the family-
 # collision warning lives in app.py.

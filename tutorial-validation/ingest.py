@@ -66,6 +66,12 @@ def _ensure_collection(client: QdrantClient) -> bool:
             "dense": models.VectorParams(
                 size=settings.dense_dim,
                 distance=models.Distance.COSINE,
+                # Build-time HNSW knobs. The demo can later flip these via
+                # update_collection without re-embedding.
+                hnsw_config=models.HnswConfigDiff(
+                    m=settings.hnsw_m,
+                    ef_construct=settings.hnsw_ef_construct,
+                ),
             ),
         },
         sparse_vectors_config={
