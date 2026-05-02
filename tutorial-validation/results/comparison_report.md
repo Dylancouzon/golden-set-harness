@@ -1,18 +1,95 @@
-# Tutorial gaps — pipeline-output-quality.md
+# Ragas vs DeepEval — comparison report
 
-Each entry records a place where the tutorial was missing detail, ambiguous, or wrong while building this Ragas vs DeepEval comparison demo. The gap log is the actual verification artifact for the tutorial.
+_Generated from 10 queries._
 
-Format per entry:
 
-```
-### <one-line gap title>
-**Where:** <tutorial section / line range>
-**What was missing:** <concrete description>
-**What I had to invent:** <code or decision>
-**Tutorial fix suggestion:** <one sentence>
-```
+## 1. Aggregate scores
 
----
+| Metric | Ragas | DeepEval | Δ (R-D) |
+|---|---|---|---|
+| faithfulness | 0.865 | 0.959 | -0.094 |
+| answer_relevancy | 0.584 | 0.938 | -0.354 |
+| context_precision | 0.619 | 0.630 | -0.011 |
+| context_recall | 0.533 | 0.800 | -0.267 |
+
+## 2. Per-query correlation between libraries
+
+Both libraries should agree on directional quality. Pearson > 0.6 is a healthy floor for faithfulness and answer_relevancy; below that, the libraries are measuring different things.
+
+| Metric | Pearson r | Spearman ρ |
+|---|---|---|
+| faithfulness | -0.028 | 0.130 |
+| answer_relevancy | -0.053 | 0.309 |
+| context_precision | 0.831 | 0.815 |
+| context_recall | 0.634 | 0.639 |
+
+## 3. Correlation against manual ratings
+
+_No `results/manual_ratings.jsonl` found. Run `python manual_judge.py` to enable this section. Without it, the rubric falls back to per-query correlation as a weaker proxy for trustworthiness._
+
+## 4. Top-10 faithfulness disagreements
+
+Eyeballing 3 of these answers the question 'when they disagree, which one is right?' — leave a 1-line note per inspection.
+
+| query_id | query (truncated) | Ragas | DeepEval | |Δ| |
+|---|---|---|---|---|
+| 8271 | Income in zero-interest environment | 0.727 | 1.000 | 0.273 |
+| 2568 | How to pay with cash when car shopping? | 0.789 | 1.000 | 0.211 |
+| 2388 | Do financial advisors get better deals on mortgages? | 0.923 | 0.714 | 0.209 |
+| 3149 | Tips for insurance coverage for one-man-teams | 0.846 | 1.000 | 0.154 |
+| 3512 | As an employee, when is it inappropriate to request to see y | 0.850 | 1.000 | 0.150 |
+| 1281 | How FTB and IRS find mistakes in amended tax returns? Are th | 0.864 | 1.000 | 0.136 |
+| 4105 | As an investor what are side effects of Quantitative Easing  | 0.750 | 0.875 | 0.125 |
+| 7311 | Finance, Social Capital IPOA.U | 0.941 | 1.000 | 0.059 |
+| 4179 | Why could the serious financial woes of some EU member state | 0.960 | 1.000 | 0.040 |
+| 6867 | Will there always be somebody selling/buying in every stock? | 1.000 | 1.000 | 0.000 |
+
+## 5. Runtime + judge model
+
+Token usage is not exposed by either library on its metric objects, so judge-token cost has to be estimated upstream (the Streamlit cost meter does this directionally). Wall-clock comparison below.
+
+| Field | Ragas | DeepEval |
+|---|---|---|
+| wall seconds (total) | 459.597 | 536.579 |
+| wall seconds / query | 45.960 | 53.658 |
+| judge model used | gpt-5.4 | gpt-5.4 |
+
+## 6. Library feature matrix
+
+| Capability | Ragas | DeepEval |
+|---|---|---|
+| Pytest-native API | No | Yes (`assert_test`) |
+| Custom metrics via natural language | Limited | Yes (G-Eval) |
+| Reference-free metrics | Yes | Yes |
+| Built-in dataset/UI | No | Yes (Confident AI cloud) |
+| Agent-trajectory metrics | Yes (newer) | Yes |
+| Setup LOC for this pipeline | 41 | 52 |
+| Judge reasoning exposed per metric | No (not in 0.4.x) | Yes (`metric.reason`) |
+
+## 7. Recommendation rubric
+
+**Lead with Ragas in the tutorial — won 2/5 scored criteria** (Ragas: 2, DeepEval: 0).
+
+| Criterion | Ragas | DeepEval | Winner |
+|---|---|---|---|
+| Higher correlation with manual faithfulness | — | — | — |
+| Higher correlation with manual answer_relevancy | — | — | — |
+| Lower setup LOC | 41 | 52 | ragas |
+| Lower wall-clock per query | 45.960 | 53.658 | ragas |
+| Lower judge-token cost per query (proxy: wall seconds) | see #4 | see #4 | skipped |
+| Catches a failure mode via G-Eval | — | — | tie |
+
+_The 5th criterion (judge-token cost) is folded into wall-clock since neither library exposes per-metric token counts. The 6th (G-Eval failure-mode catch) is DeepEval-only by definition; it scores +1 only when at least one query had a G-Eval custom score < 0.5 while standard metrics scored ≥ 0.7._
+
+## 8. Reference-answer quality caveat
+
+The golden-set references were LLM-generated (constrained to the relevant FiQA passages, but still LLM output). This is the weakest link in the methodology — `context_precision` and `context_recall` are scored against text that itself wasn't human-validated. Scores can shift by a few points depending on the reference-generation prompt. **Treat the recommendation as directional, not definitive, and re-run with human-written references if the call is close** (margin ≤ 1 criterion).
+
+## 9. Tutorial-update suggestions
+
+Top gaps logged during the build (full text in `results/tutorial_gaps.md`):
+
+
 
 ### Tutorial pins `gpt-5.4` as the judge model with no fallback
 **Where:** config block (`JUDGE_MODEL=gpt-5.4`)
@@ -61,4 +138,5 @@ Format per entry:
 **What was missing:** The tutorial imports `LLMTestCaseParams` from `deepeval.test_case`. DeepEval emits a `DeprecationWarning` recommending `SingleTurnParams` instead.
 **What I had to invent:** Kept `LLMTestCaseParams` to preserve tutorial fidelity but warn-suppressed the deprecation at import time so the demo console isn't noisy.
 **Tutorial fix suggestion:** Update to `from deepeval.test_case import SingleTurnParams` (same usage) before the next DeepEval major.
+
 
