@@ -6,6 +6,10 @@ venv/
 .streamlit/
 .pytest_cache/
 
+# Tooling-state directories — local-only
+.claude/
+.deepeval/
+
 # results: large CSVs/JSONL — keep markdown reports & gap log
 results/*.jsonl
 results/*.csv
