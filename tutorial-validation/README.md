@@ -37,12 +37,6 @@ pytest tests/                 # CI-gate demo (DeepEval pytest-native API)
 python compare.py             # → results/comparison_report.md
 ```
 
-## Cost expectations
-
-- Live demo run (20 queries): ~$1–2
-- Full batch run (300 queries): ~$15–25
-- Ingest: one-shot ~$1, never re-run on tweak
-
 ## Files
 
 - `app.py` — Streamlit live demo
