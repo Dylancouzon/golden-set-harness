@@ -8,22 +8,22 @@ Why this matters:
   - The Streamlit app calls `score_both_parallel` per query so the table can
     stream live. Running the libs sequentially would double the wall-clock
     per row, which kills the live-demo feel.
-  - Ragas is async-native; DeepEval is sync-native. We run Ragas in the main
-    event loop and DeepEval in a worker thread so the two overlap.
+  - Both libs' top-level scoring entry points are sync; we run them in
+    parallel via a ThreadPoolExecutor so they overlap.
 
 Three notable pragmas, each documented inline below and in the gap log:
   1. We use the deprecated `ragas.metrics` (module-style) classes instead of
      the new `ragas.metrics.collections` because the new ones require an
      InstructorLLM, not the LangchainLLMWrapper the tutorial uses.
-  2. Ragas in 0.4.x does not expose per-metric reasoning. We surface a
-     placeholder string so the drill-down panel still has a slot for it,
-     keeping the layout symmetric with DeepEval.
+  2. Ragas's per-metric reasoning lives on `result.ragas_traces` — a
+     tree of ChainRun objects, not a `metric.reason` attribute. We walk
+     the tree to extract per-claim reasoning for each metric. See
+     `_extract_ragas_reasons` below.
   3. The judge model has a 404-safe fallback path. The tutorial pins
      `gpt-5.4`; if that name disappears, we fall back to `gpt-4o`.
 """
 from __future__ import annotations
 
-import asyncio
 import os
 import time
 import warnings
@@ -45,7 +45,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning, module="deepeval"
 # Ragas docs floating around the internet — use `LangchainLLMWrapper`, which
 # is *only* compatible with the deprecated path. Switching to the new path
 # would break tutorial fidelity. See results/tutorial_gaps.md for details.
-from ragas import SingleTurnSample
+from ragas import SingleTurnSample, EvaluationDataset, evaluate
 from ragas.metrics import (
     Faithfulness,
     AnswerRelevancy,
@@ -194,14 +194,152 @@ def _resolve_judge_model(requested: str) -> str:
 # ----------------------------------------------------------------------------
 # Ragas
 # ----------------------------------------------------------------------------
+# Map from a metric name to the ChainRun trace nodes that hold its reasoning.
+# Each entry maps the metric to a "leaf prompt name" inside the trace tree
+# that contains the structured judge output. Discovered by probing
+# `result.ragas_traces` against ragas 0.4.3.
+_RAGAS_REASON_LEAVES: dict[str, str] = {
+    "faithfulness": "n_l_i_statement_prompt",
+    "answer_relevancy": "response_relevance_prompt",
+    "context_precision": "context_precision_prompt",
+    "context_recall": "context_recall_classification_prompt",
+}
 
-async def _score_ragas_async(record: dict[str, Any], judge_model: str) -> dict[str, Any]:
-    """Score one record with Ragas's four standard metrics.
 
-    Tutorial fidelity: builds a SingleTurnSample with exactly the field names
-    the tutorial uses (`user_input`, `retrieved_contexts`, `response`,
-    `reference`) and assigns the judge LLM via `metric.llm = ...` per the
-    tutorial's pattern.
+def _format_faithfulness_reason(leaf_outputs: list) -> str:
+    """Faithfulness leaves carry per-statement verdicts with reasons."""
+    parts: list[str] = []
+    for block in leaf_outputs:
+        statements = (block or {}).get("statements", []) if isinstance(block, dict) else []
+        for s in statements:
+            verdict = s.get("verdict", "?")
+            mark = "✓" if verdict == 1 else ("✗" if verdict == 0 else "?")
+            parts.append(f"{mark} {s.get('statement', '')}\n   reason: {s.get('reason', '').strip()}")
+    return "\n".join(parts) if parts else "(no per-statement output)"
+
+
+def _format_answer_relevancy_reason(leaf_outputs: list) -> str:
+    """AnswerRelevancy back-translates the answer into questions; the score
+    is the average cosine similarity to the original. The traces give us
+    the back-translated questions plus a 'noncommittal' flag."""
+    questions: list[str] = []
+    noncommittal = False
+    for block in leaf_outputs:
+        if not isinstance(block, dict):
+            continue
+        q = block.get("question")
+        if q:
+            questions.append(q)
+        if block.get("noncommittal"):
+            noncommittal = True
+    parts = [f"Back-translated questions from the answer (cosine-similar to original = score):"]
+    parts += [f"  • {q}" for q in questions]
+    if noncommittal:
+        parts.append("Judge flagged the answer as non-committal (auto-zero).")
+    return "\n".join(parts) if questions else "(no back-translated questions)"
+
+
+def _format_context_precision_reason(leaf_outputs: list) -> str:
+    """ContextPrecision asks per-context: was this chunk useful for the
+    answer? Returns one (verdict, reason) per chunk."""
+    parts: list[str] = []
+    for i, block in enumerate(leaf_outputs, start=1):
+        if not isinstance(block, dict):
+            continue
+        verdict = block.get("verdict", "?")
+        mark = "✓ useful" if verdict == 1 else ("✗ not useful" if verdict == 0 else "?")
+        parts.append(f"Chunk {i}: {mark}\n   reason: {block.get('reason', '').strip()}")
+    return "\n".join(parts) if parts else "(no per-chunk verdicts)"
+
+
+def _format_context_recall_reason(leaf_outputs: list) -> str:
+    """ContextRecall splits the reference into atomic statements and asks
+    whether each is attributable to the retrieved contexts."""
+    parts: list[str] = []
+    for block in leaf_outputs:
+        classifications = (block or {}).get("classifications", []) if isinstance(block, dict) else []
+        for c in classifications:
+            attr = c.get("attributed", "?")
+            mark = "✓ attributed" if attr == 1 else ("✗ not attributed" if attr == 0 else "?")
+            parts.append(f"{mark}: {c.get('statement', '')}\n   reason: {c.get('reason', '').strip()}")
+    return "\n".join(parts) if parts else "(no per-statement classifications)"
+
+
+_RAGAS_REASON_FORMATTERS = {
+    "faithfulness": _format_faithfulness_reason,
+    "answer_relevancy": _format_answer_relevancy_reason,
+    "context_precision": _format_context_precision_reason,
+    "context_recall": _format_context_recall_reason,
+}
+
+
+def _to_plain_dict(obj: Any) -> Any:
+    """Recursively convert Pydantic objects to plain dicts so the
+    per-metric formatters (which assume dict access) can read them.
+    Falls through plain types unchanged."""
+    if hasattr(obj, "model_dump"):
+        return obj.model_dump()
+    if hasattr(obj, "dict") and callable(getattr(obj, "dict")):
+        try:
+            return obj.dict()
+        except Exception:
+            pass
+    if isinstance(obj, list):
+        return [_to_plain_dict(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _to_plain_dict(v) for k, v in obj.items()}
+    return obj
+
+
+def _extract_ragas_reasons(ragas_traces: dict) -> dict[str, str]:
+    """Walk a `result.ragas_traces` tree and return human-readable reasoning
+    text per metric.
+
+    The trace tree is structured as:
+        evaluation → row 0 → <metric_name> → <prompt_name>(s)
+    where the prompt_name leaves carry the structured judge output (as
+    Pydantic objects like NLIStatementOutput, ContextRecallClassifications,
+    etc.). Multiple leaf nodes can share the same prompt_name (e.g.
+    context_precision runs once per chunk), so we collect ALL leaves with
+    the matching name, dump them to plain dicts, and pass the list to the
+    per-metric formatter.
+    """
+    reasons: dict[str, str] = {}
+    for metric_name, leaf_name in _RAGAS_REASON_LEAVES.items():
+        leaf_outputs: list = []
+        for run in ragas_traces.values():
+            if getattr(run, "name", None) != leaf_name:
+                continue
+            outputs = run.outputs or {}
+            payload = outputs.get("output") if hasattr(outputs, "get") else None
+            if payload is None:
+                payload = outputs
+            payload = _to_plain_dict(payload)
+            if isinstance(payload, list):
+                leaf_outputs.extend(payload)
+            elif payload:
+                leaf_outputs.append(payload)
+        formatter = _RAGAS_REASON_FORMATTERS.get(metric_name)
+        if formatter is None or not leaf_outputs:
+            reasons[metric_name] = "(no reasoning captured)"
+        else:
+            try:
+                reasons[metric_name] = formatter(leaf_outputs)
+            except Exception as exc:
+                reasons[metric_name] = f"(reason format failed: {type(exc).__name__}: {exc})"
+    return reasons
+
+
+def _score_ragas_sync(record: dict[str, Any], judge_model: str) -> dict[str, Any]:
+    """Score one record with Ragas's four standard metrics + capture reasoning.
+
+    Uses `evaluate()` rather than per-metric `single_turn_ascore` because
+    only `evaluate()` returns an `EvaluationResult` with `ragas_traces` —
+    the tree of ChainRun objects that carries the judge's structured
+    output (the 'reasoning'). See _extract_ragas_reasons for the tree walk.
+
+    Tutorial fidelity: still builds SingleTurnSample with the exact field
+    names the tutorial uses.
     """
     judge = _make_ragas_judge(judge_model)
     # AnswerRelevancy needs an embeddings model. We hard-code text-embedding-
@@ -218,37 +356,41 @@ async def _score_ragas_async(record: dict[str, Any], judge_model: str) -> dict[s
         reference=record["ground_truth"],
     )
 
-    # Each metric is a stateless object with a couple of attributes set
-    # before we call `single_turn_ascore`. Building them fresh per record is
-    # cheap (the heavy work is the LLM call inside ascore).
-    metrics = [
+    metric_objs = [
         ("faithfulness", Faithfulness()),
         ("answer_relevancy", AnswerRelevancy()),
         ("context_precision", ContextPrecision()),
         ("context_recall", ContextRecall()),
     ]
 
-    scores: dict[str, float] = {}
-    reasons: dict[str, str] = {}
+    scores: dict[str, float] = {n: float("nan") for n, _ in metric_objs}
+    reasons: dict[str, str] = {n: "(no reasoning captured)" for n, _ in metric_objs}
 
-    for name, metric in metrics:
-        metric.llm = judge
-        if hasattr(metric, "embeddings"):
-            metric.embeddings = embeddings
-        # Ragas 0.4.x does not expose per-metric reasoning. The tutorial
-        # speculates a `single_turn_ascore_with_reason` API that doesn't
-        # exist — see results/tutorial_gaps.md. We fall back to scores-only.
-        try:
-            score = await metric.single_turn_ascore(sample)
-        except Exception as exc:
+    try:
+        ds = EvaluationDataset(samples=[sample])
+        result = evaluate(
+            dataset=ds,
+            metrics=[m for _, m in metric_objs],
+            llm=judge,
+            embeddings=embeddings,
+            show_progress=False,
+        )
+        # Pull per-metric scores from the dataframe (one row, one column per metric).
+        df = result.to_pandas()
+        for name, _ in metric_objs:
+            if name in df.columns and len(df) > 0:
+                v = df.iloc[0][name]
+                try:
+                    scores[name] = float(v)
+                except (TypeError, ValueError):
+                    scores[name] = float("nan")
+        # Walk the trace tree to extract reasoning.
+        traces = getattr(result, "ragas_traces", {}) or {}
+        reasons.update(_extract_ragas_reasons(traces))
+    except Exception as exc:
+        for name in scores:
             scores[name] = float("nan")
             reasons[name] = f"(scoring failed: {type(exc).__name__}: {exc})"
-            continue
-        try:
-            scores[name] = float(score)
-        except (TypeError, ValueError):
-            scores[name] = float("nan")
-        reasons[name] = "(reason not exposed by this Ragas metric version)"
 
     return {"scores": scores, "reasons": reasons}
 
@@ -335,11 +477,12 @@ def score_both_parallel(
     judge_model: str,
     custom_geval_criterion: str | None = None,
 ) -> dict[str, Any]:
-    """Run Ragas (async) and DeepEval (sync, in a thread) in parallel.
+    """Run Ragas and DeepEval in parallel for one record.
 
-    The two libs do roughly the same amount of LLM work per record, so
-    running them concurrently roughly halves the per-row wall-clock vs
-    running sequentially.
+    Both lib entry points are sync; we hand each to its own worker thread
+    and join. The two libs do roughly the same amount of LLM work per
+    record, so running them concurrently roughly halves the per-row
+    wall-clock vs running sequentially.
 
     Returns:
       {
@@ -352,21 +495,13 @@ def score_both_parallel(
     resolved_judge = _resolve_judge_model(judge_model)
     start = time.time()
 
-    # Fresh event loop per call so we don't conflict with any caller's loop
-    # (e.g. Streamlit doesn't have one). The single-worker pool is enough
-    # because we only need one DeepEval call to overlap with one Ragas call.
-    loop = asyncio.new_event_loop()
-    try:
-        with ThreadPoolExecutor(max_workers=1) as pool:
-            de_future = pool.submit(
-                _score_deepeval_sync, record, resolved_judge, custom_geval_criterion
-            )
-            ragas_result = loop.run_until_complete(
-                _score_ragas_async(record, resolved_judge)
-            )
-            de_result = de_future.result()
-    finally:
-        loop.close()
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        ragas_future = pool.submit(_score_ragas_sync, record, resolved_judge)
+        de_future = pool.submit(
+            _score_deepeval_sync, record, resolved_judge, custom_geval_criterion
+        )
+        ragas_result = ragas_future.result()
+        de_result = de_future.result()
 
     return {
         "ragas": ragas_result,

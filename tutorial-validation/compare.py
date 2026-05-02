@@ -210,7 +210,8 @@ def section_feature_matrix(setup_loc: dict[str, int]) -> str:
         ["Built-in dataset/UI", "No", "Yes (Confident AI cloud)"],
         ["Agent-trajectory metrics", "Yes (newer)", "Yes"],
         ["Setup LOC for this pipeline", str(setup_loc.get("ragas", "—")), str(setup_loc.get("deepeval", "—"))],
-        ["Judge reasoning exposed per metric", "No (not in 0.4.x)", "Yes (`metric.reason`)"],
+        ["Judge reasoning ergonomics", "Available, but undocumented — walk `result.ragas_traces`", "Direct: `metric.reason`"],
+        ["Reasoning granularity", "Per atomic claim / chunk", "Holistic (one string per metric)"],
     ]
     return (
         "## 6. Library feature matrix\n\n"

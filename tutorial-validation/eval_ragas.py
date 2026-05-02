@@ -17,7 +17,6 @@ Usage:  python eval_ragas.py
 """
 from __future__ import annotations
 
-import asyncio
 import json
 import sys
 import time
@@ -28,7 +27,7 @@ from tqdm import tqdm
 
 from config import DEFAULT_PROMPT_TEMPLATE, settings
 from pipeline.pipeline import run_one
-from pipeline.scoring import _resolve_judge_model, _score_ragas_async
+from pipeline.scoring import _resolve_judge_model, _score_ragas_sync
 
 
 GOLDEN_PATH = Path(__file__).parent / "results" / "golden_set.jsonl"
@@ -86,11 +85,11 @@ def _generate_records(golden: list[dict]) -> list[dict]:
     return out
 
 
-async def _score_all(records: list[dict], judge: str) -> list[dict]:
+def _score_all(records: list[dict], judge: str) -> list[dict]:
     rows = []
     for rec in tqdm(records, desc="ragas-score", unit="q"):
         try:
-            scored = await _score_ragas_async(rec, judge)
+            scored = _score_ragas_sync(rec, judge)
         except Exception as exc:
             print(f"  ragas failed qid={rec['query_id']}: {exc}", file=sys.stderr)
             continue
@@ -119,7 +118,7 @@ def main() -> int:
     judge = _resolve_judge_model(settings.judge_model)
     print(f"Scoring with Ragas (judge={judge})…")
     t0 = time.time()
-    rows = asyncio.run(_score_all(records, judge))
+    rows = _score_all(records, judge)
     elapsed = time.time() - t0
 
     df = pd.DataFrame(rows)

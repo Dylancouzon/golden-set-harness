@@ -592,6 +592,10 @@ if "last_run" in st.session_state and not st.session_state["last_run"].empty:
 
     with col2:
         st.subheader("Side-by-side scores + judge reasoning")
+        st.caption(
+            "Ragas reasoning is per-claim/per-chunk (more granular). "
+            "DeepEval reasoning is one holistic explanation per metric."
+        )
         for metric in RAGAS_METRICS:
             st.markdown(f"**{metric}**")
             mc1, mc2 = st.columns(2)
@@ -599,7 +603,9 @@ if "last_run" in st.session_state and not st.session_state["last_run"].empty:
                 rval = row.get(f"ragas_{metric}", float("nan"))
                 st.metric("Ragas", f"{rval:.2f}" if not (rval is None or math.isnan(rval)) else "—")
                 with st.expander("Ragas judge reasoning"):
-                    st.write(reasons.get("ragas", {}).get(metric) or "(none)")
+                    # st.text preserves the verdict-marker layout and newlines
+                    # of the formatted reason output (✓/✗ + reason per claim).
+                    st.text(reasons.get("ragas", {}).get(metric) or "(none)")
             with mc2:
                 dval = row.get(f"deepeval_{metric}", float("nan"))
                 st.metric("DeepEval", f"{dval:.2f}" if not (dval is None or math.isnan(dval)) else "—")

@@ -38,11 +38,11 @@ Format per entry:
 **What I had to invent:** Stick with the deprecated module-style metrics, which still accept `LangchainLLMWrapper`. The trade-off: lose the new collections-style features (none of which we need for this demo).
 **Tutorial fix suggestion:** Show both forms side-by-side, explain when each applies, and explicitly call out the LangchainLLMWrapper-vs-InstructorLLM split.
 
-### `single_turn_ascore_with_reason` is not exposed by any Ragas metric in 0.4.3
-**Where:** `pipeline/scoring.py` async loop in instructions
-**What was missing:** The instructions speculate the method may exist (`try ... except AttributeError`). It does not exist on either deprecated or new collections metrics. There is no public API to retrieve per-metric reasoning out of Ragas in this version.
-**What I had to invent:** Permanent fallback path: call `single_turn_ascore` and store `"(reason not exposed by this Ragas metric version)"` as the reason. The DeepEval drill-down panel still surfaces real judge reasoning, which is the demo's main asymmetry pitch.
-**Tutorial fix suggestion:** Don't claim Ragas reasoning is available. Either drop the reason column on the Ragas side or document that reasoning is DeepEval-only on the live demo.
+### Ragas reasoning is available but undiscoverable via the per-sample API
+**Where:** `pipeline/scoring.py` Ragas scoring path
+**What was missing:** The instructions imply Ragas may expose reasoning via `single_turn_ascore_with_reason`. It does not — there is no such method, and the metric instances themselves carry no `reason` attribute or `score_with_reason` method after `single_turn_ascore`. **However**, when scoring via `evaluate()` (not the per-sample API), Ragas populates `EvaluationResult.ragas_traces` with a tree of `ChainRun` objects whose leaves carry the structured judge output as Pydantic models (`NLIStatementOutput`, `ContextRecallClassifications`, etc.). The reasoning is rich — for Faithfulness, you get verdict + reason per atomic claim; for ContextPrecision, per chunk; for ContextRecall, per reference statement.
+**What I had to invent:** Switched the Ragas scoring path to `evaluate()` instead of `single_turn_ascore`, then walk `ragas_traces` and dump the Pydantic leaf payloads to plain dicts so per-metric formatters can render them. See `_extract_ragas_reasons` in `pipeline/scoring.py`. The drill-down panel now shows real Ragas reasoning (per-claim or per-chunk) alongside DeepEval's (per-metric holistic).
+**Tutorial fix suggestion:** Document that to surface reasoning out of Ragas, you must use `evaluate()` (not the per-sample API) and walk `result.ragas_traces`. This is undocumented in the official Ragas docs as of 0.4.3 — discoverability is the gap, not capability.
 
 ### Qdrant rejects empty `points=[]` upserts as "Bad request: Empty update request"
 **Where:** `ingest.py` end-of-run flush
