@@ -116,14 +116,17 @@ def _resolve_judge_model(requested: str) -> str:
         if LAST_JUDGE_USED == requested or LAST_JUDGE_USED == JUDGE_FALLBACK and requested == JUDGE_FALLBACK:
             return LAST_JUDGE_USED
 
-    # Probe with a one-token completion to see if the model exists.
+    # Probe with a tiny completion to see if the model exists. We send no
+    # token cap because modern OpenAI reasoning models (gpt-5+) reject
+    # `max_tokens` and require `max_completion_tokens`; LangChain and
+    # DeepEval handle that translation internally for actual scoring calls,
+    # but the raw probe doesn't need a cap at all.
     try:
         if requested.startswith("gpt") or requested.startswith("o"):
             from openai import OpenAI as _OpenAI
             client = _OpenAI(api_key=settings.openai_api_key)
             client.chat.completions.create(
                 model=requested,
-                max_tokens=1,
                 messages=[{"role": "user", "content": "ok"}],
             )
         else:

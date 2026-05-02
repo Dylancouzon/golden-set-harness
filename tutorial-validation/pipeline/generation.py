@@ -44,11 +44,25 @@ def generate(
         }
         return resp.content[0].text, usage
 
-    resp = _openai().chat.completions.create(
-        model=model,
-        max_tokens=512,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    # Modern reasoning models (gpt-5+) require `max_completion_tokens`; older
+    # chat models accept `max_tokens`. Try max_tokens first; if the API
+    # rejects it, retry with max_completion_tokens.
+    try:
+        resp = _openai().chat.completions.create(
+            model=model,
+            max_tokens=512,
+            messages=[{"role": "user", "content": prompt}],
+        )
+    except Exception as exc:
+        msg = str(exc).lower()
+        if "max_tokens" in msg and "max_completion_tokens" in msg:
+            resp = _openai().chat.completions.create(
+                model=model,
+                max_completion_tokens=512,
+                messages=[{"role": "user", "content": prompt}],
+            )
+        else:
+            raise
     usage = {
         "input_tokens": getattr(resp.usage, "prompt_tokens", 0) or 0,
         "output_tokens": getattr(resp.usage, "completion_tokens", 0) or 0,

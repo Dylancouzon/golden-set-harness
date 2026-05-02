@@ -38,6 +38,12 @@ Format per entry:
 **What I had to invent:** Permanent fallback path: call `single_turn_ascore` and store `"(reason not exposed by this Ragas metric version)"` as the reason. The DeepEval drill-down panel still surfaces real judge reasoning, which is the demo's main asymmetry pitch.
 **Tutorial fix suggestion:** Don't claim Ragas reasoning is available. Either drop the reason column on the Ragas side or document that reasoning is DeepEval-only on the live demo.
 
+### Modern OpenAI models reject `max_tokens` — needs `max_completion_tokens`
+**Where:** `pipeline/generation.py` — OpenAI generator branch
+**What was missing:** Tutorial pins gpt-5.4 as a generator option and uses `max_tokens=512` against the OpenAI Chat Completions API. Reasoning-class models (gpt-5+, o-series) reject `max_tokens` with `BadRequestError: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.` LangChain/DeepEval handle this internally, but the raw OpenAI client used in the generator does not.
+**What I had to invent:** Try/except in `generate()` that retries with `max_completion_tokens=512` when the API rejects `max_tokens`. Also dropped the token cap from the judge-model probe in `scoring.py` since it doesn't need one.
+**Tutorial fix suggestion:** Either default to a model that accepts `max_tokens` (e.g. gpt-4o), or branch on model name and use `max_completion_tokens` for gpt-5+/o-series.
+
 ### `LLMTestCaseParams` is deprecated in DeepEval 3.9.9 (use `SingleTurnParams`)
 **Where:** `pipeline/scoring.py` G-Eval block in instructions
 **What was missing:** The tutorial imports `LLMTestCaseParams` from `deepeval.test_case`. DeepEval emits a `DeprecationWarning` recommending `SingleTurnParams` instead.
