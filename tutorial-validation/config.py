@@ -58,8 +58,35 @@ class Settings:
 
 # Sidebar dropdowns. The same model can appear in both lists; the family-
 # collision warning lives in app.py.
-GENERATOR_CHOICES = ["claude-sonnet-4-6", "claude-opus-4-7", "gpt-5.4"]
-JUDGE_CHOICES = ["gpt-5.4", "claude-sonnet-4-6", "claude-opus-4-7"]
+#
+# Mini/nano models are the cost-and-speed lever:
+#   - gpt-5-mini / gpt-5-nano / gpt-4o-mini: ~10x cheaper than gpt-5.4
+#   - claude-haiku-4-5: ~10x cheaper than claude-sonnet-4-6
+# Bigger models still tend to correlate better with human ratings as judges
+# (LLM-as-judge literature) — verify against manual_judge.py before
+# committing to a mini judge in production.
+GENERATOR_CHOICES = [
+    "claude-sonnet-4-6",
+    "claude-opus-4-7",
+    "claude-haiku-4-5",
+    "gpt-5.4",
+    "gpt-5-mini",
+    "gpt-5-nano",
+    "gpt-4o-mini",
+]
+# Note: gpt-5-mini and gpt-5-nano are deliberately NOT in JUDGE_CHOICES.
+# Ragas internally forces a low temperature on its LLM calls, and those
+# reasoning-class minis reject any temperature other than the default.
+# Result: every Ragas score returns NaN. They work fine as generators
+# (we control that call) but can't be Ragas judges in 0.4.x.
+# gpt-4o-mini is the cheap judge that survives this constraint.
+JUDGE_CHOICES = [
+    "gpt-5.4",
+    "gpt-4o-mini",
+    "claude-sonnet-4-6",
+    "claude-opus-4-7",
+    "claude-haiku-4-5",
+]
 
 # If the configured judge_model 404s at the provider, scoring.py falls back to
 # this. gpt-4o is widely available and a common default. See

@@ -60,13 +60,24 @@ def sample_queries(golden: list[dict], n: int, seed: int) -> list[dict]:
 # Per-token rates in USD/1K tokens for each model the demo can use. Pulled
 # from public price lists; treat as directional. The cost meter aggregates
 # generator usage + an approximated judge usage per row.
+#
+# Order matters: longer prefixes must come BEFORE shorter ones because the
+# fallback matcher uses str.startswith and picks the first hit. e.g.
+# "claude-haiku-4-5" must precede "claude" so we don't accidentally apply
+# Sonnet pricing to Haiku.
 COST_PER_1K = {
-    "claude-sonnet-4-6": {"in": 0.003, "out": 0.015},
-    "claude-opus-4-7":  {"in": 0.015, "out": 0.075},
-    "claude-sonnet":     {"in": 0.003, "out": 0.015},
-    "gpt-5.4":           {"in": 0.005, "out": 0.015},
-    "gpt-4o":            {"in": 0.005, "out": 0.015},
-    "gpt-4o-mini":       {"in": 0.00015, "out": 0.0006},
+    # Anthropic
+    "claude-opus-4-7":     {"in": 0.015,   "out": 0.075},
+    "claude-sonnet-4-6":   {"in": 0.003,   "out": 0.015},
+    "claude-haiku-4-5":    {"in": 0.0008,  "out": 0.004},
+    "claude-sonnet":       {"in": 0.003,   "out": 0.015},
+    "claude-haiku":        {"in": 0.0008,  "out": 0.004},
+    # OpenAI
+    "gpt-5.4":             {"in": 0.005,   "out": 0.015},
+    "gpt-5-mini":          {"in": 0.00025, "out": 0.002},
+    "gpt-5-nano":          {"in": 0.00005, "out": 0.0004},
+    "gpt-4o-mini":         {"in": 0.00015, "out": 0.0006},
+    "gpt-4o":              {"in": 0.005,   "out": 0.015},
 }
 
 

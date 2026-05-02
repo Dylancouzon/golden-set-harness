@@ -86,7 +86,15 @@ LAST_JUDGE_USED: str = ""
 # start with "gpt" or (for reasoning models) "o".
 
 def _make_ragas_judge(model_name: str):
-    """Return a Ragas-compatible judge wrapper."""
+    """Return a Ragas-compatible judge wrapper.
+
+    We pass temperature=0 for determinism. Note: this rules out OpenAI's
+    reasoning-class minis (gpt-5-mini, gpt-5-nano) which only accept the
+    default temperature — Ragas itself forces a low temperature on its
+    internal calls regardless of what we set here, so those models
+    return NaN scores when used as Ragas judges. They are excluded from
+    JUDGE_CHOICES on purpose; see config.py.
+    """
     if model_name.startswith("gpt") or model_name.startswith("o"):
         return LangchainLLMWrapper(
             ChatOpenAI(model=model_name, temperature=0, api_key=settings.openai_api_key)

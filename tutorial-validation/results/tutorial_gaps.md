@@ -14,6 +14,12 @@ Format per entry:
 
 ---
 
+### Ragas's internal temperature override blocks reasoning-class minis as judges
+**Where:** `pipeline/scoring.py` — `_make_ragas_judge` returns a `LangchainLLMWrapper(ChatOpenAI(...))`
+**What was missing:** Tutorial assumes any OpenAI chat model can be a Ragas judge. In Ragas 0.4.x, the metric layer forces `temperature=0.01` on its internal LLM calls regardless of what's set on the underlying ChatOpenAI. OpenAI's reasoning-class minis (`gpt-5-mini`, `gpt-5-nano`) reject any non-default temperature with `BadRequestError: Unsupported value: 'temperature' does not support 0.01`. Net effect: Ragas returns NaN for every metric when one of these models is picked as judge. DeepEval works fine because it uses the OpenAI SDK directly and doesn't force a temperature.
+**What I had to invent:** Removed `gpt-5-mini` and `gpt-5-nano` from `JUDGE_CHOICES` in config.py (they remain in `GENERATOR_CHOICES`, where we control the call). The cheap-judge path goes through `gpt-4o-mini` instead, which accepts arbitrary temperatures and is ~30x cheaper than gpt-5.4.
+**Tutorial fix suggestion:** Document that not every chat model can serve as a Ragas judge and call out reasoning-class minis as known-incompatible until Ragas exposes a way to skip the temperature override.
+
 ### Tutorial pins `gpt-5.4` as the judge model with no fallback
 **Where:** config block (`JUDGE_MODEL=gpt-5.4`)
 **What was missing:** The tutorial pins a model ID that may not be available at OpenAI today. The reader has no signal that a fallback is needed if the API 404s.
