@@ -38,6 +38,12 @@ Format per entry:
 **What I had to invent:** Permanent fallback path: call `single_turn_ascore` and store `"(reason not exposed by this Ragas metric version)"` as the reason. The DeepEval drill-down panel still surfaces real judge reasoning, which is the demo's main asymmetry pitch.
 **Tutorial fix suggestion:** Don't claim Ragas reasoning is available. Either drop the reason column on the Ragas side or document that reasoning is DeepEval-only on the live demo.
 
+### Qdrant rejects empty `points=[]` upserts as "Bad request: Empty update request"
+**Where:** `ingest.py` end-of-run flush
+**What was missing:** Tutorial recommends a final `client.upsert(points=[], wait=True)` as a "flush" to ensure all pending writes have landed before reporting the count. Qdrant 1.17+ rejects this with `400 Bad request: Empty update request`. Ingest completes correctly but exits with a 400 stack trace, which looks like failure to a casual reader.
+**What I had to invent:** Replace the empty-points flush with a `client.count(..., exact=True)` call — that forces a sync round-trip and waits for pending writes without sending an empty body.
+**Tutorial fix suggestion:** Either drop the explicit flush (the synchronous count check at the end is enough), or document that the Qdrant API requires non-empty point lists.
+
 ### Modern OpenAI models reject `max_tokens` — needs `max_completion_tokens`
 **Where:** `pipeline/generation.py` — OpenAI generator branch
 **What was missing:** Tutorial pins gpt-5.4 as a generator option and uses `max_tokens=512` against the OpenAI Chat Completions API. Reasoning-class models (gpt-5+, o-series) reject `max_tokens` with `BadRequestError: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.` LangChain/DeepEval handle this internally, but the raw OpenAI client used in the generator does not.

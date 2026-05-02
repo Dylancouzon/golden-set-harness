@@ -1,16 +1,26 @@
-"""Build the labeled eval set from FiQA's qrels.
+"""Build the labeled eval set from FiQA's native qrels.
 
-Reads BeIR/fiqa qrels and queries from HuggingFace, samples 300 queries
-deterministically (seed 42), generates a 1-2 sentence reference answer per query
-constrained to the relevant passages, and caches the result to
-results/golden_set.jsonl.
+Why use FiQA's qrels rather than synthesise queries: the qrels are
+human-labeled relevance judgments, which gives us a real signal for
+context_precision / context_recall. Synthesising queries would mean grading
+the system against text that came from the same model — circular.
 
-Entries follow the tutorial shape:
-    {"query_id": str, "query_text": str,
-     "labels": {doc_id: relevance, ...}, "ground_truth": str}
+Pipeline:
+  1. Load BeIR/fiqa-qrels (test split: 1,706 (query, doc, score) tuples)
+  2. Load BeIR/fiqa queries (6,648 questions)
+  3. Sample 300 queries deterministically (seed 42)
+  4. For each, generate a 1-2 sentence reference answer using Claude,
+     constrained to ONLY the labeled-relevant passages
+  5. Drop any query whose reference comes back as "NO_ANSWER"
+  6. Write results/golden_set.jsonl with the tutorial's entry shape:
+     {"query_id", "query_text", "labels": {doc_id: score, ...}, "ground_truth"}
 
-This is a one-shot batch script — the demo always reads from the cached
-golden_set.jsonl and never regenerates references on the fly.
+The reference answers are LLM-generated — that's the weakest link in the
+methodology and is called out explicitly in the comparison report. context_*
+metrics are scored against text that itself wasn't human-validated.
+
+One-shot. The demo and batch eval read the cached file; we never regenerate
+references on a config tweak.
 """
 from __future__ import annotations
 
@@ -41,7 +51,13 @@ OUT_PATH = Path(__file__).parent / "results" / "golden_set.jsonl"
 
 
 def _load_qrels_and_queries() -> tuple[dict[str, dict[str, int]], dict[str, str], dict[str, str]]:
-    """Return (qrels_by_query, query_text_by_id, corpus_text_by_id)."""
+    """Load the three FiQA tables we need.
+
+    Returns:
+      qrels:    {query_id: {doc_id: relevance_score, ...}}  (only positive scores)
+      queries:  {query_id: question text}
+      corpus:   {doc_id: passage text}
+    """
     qrels_ds = load_dataset("BeIR/fiqa-qrels", split="test")
     queries_ds = load_dataset("BeIR/fiqa", "queries", split="queries")
     corpus_ds = load_dataset("BeIR/fiqa", "corpus", split="corpus")
@@ -51,6 +67,7 @@ def _load_qrels_and_queries() -> tuple[dict[str, dict[str, int]], dict[str, str]
         qid = str(row["query-id"])
         did = str(row["corpus-id"])
         score = int(row.get("score", 1))
+        # Skip non-relevant labels — we only want positive examples.
         if score <= 0:
             continue
         qrels.setdefault(qid, {})[did] = score
@@ -61,6 +78,12 @@ def _load_qrels_and_queries() -> tuple[dict[str, dict[str, int]], dict[str, str]
 
 
 def _generate_reference(client: anthropic.Anthropic, query_text: str, passages: list[str]) -> str:
+    """Generate a 1-2 sentence answer constrained to the relevant passages.
+
+    Capped at 5 passages to keep the prompt focused and the cost down.
+    The prompt explicitly tells the model to write 'NO_ANSWER' when the
+    passages don't cover the question — those entries get dropped.
+    """
     body = REF_PROMPT.format(
         relevant_passages="\n\n".join(f"- {p}" for p in passages[:5]),
         query_text=query_text,

@@ -9,11 +9,9 @@ the drill-down panel surfaces judge reasoning side by side.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import random
-import time
 from pathlib import Path
 
 import pandas as pd
@@ -38,33 +36,29 @@ GOLDEN_PATH = Path(__file__).parent / "results" / "golden_set.jsonl"
 
 @st.cache_data(show_spinner=False)
 def load_golden_set() -> list[dict]:
+    """Read results/golden_set.jsonl. Cached for the session so file IO doesn't
+    happen on every Streamlit re-run (the script re-executes top-to-bottom on
+    every interaction)."""
     if not GOLDEN_PATH.exists():
         return []
     return [json.loads(line) for line in GOLDEN_PATH.read_text().splitlines() if line.strip()]
 
 
 def sample_queries(golden: list[dict], n: int, seed: int) -> list[dict]:
+    """Deterministically pick `n` queries. Same seed + same n → same subset,
+    which is what the slider depends on for stable demo runs."""
     rng = random.Random(seed)
     pool = list(golden)
     rng.shuffle(pool)
     return pool[: min(n, len(pool))]
 
 
-def _settings_hash(state: dict) -> str:
-    keys = [
-        "k_retrieve", "k_rerank", "hybrid", "rerank",
-        "generator_model", "judge_model", "prompt_template",
-        "geval_criterion",
-    ]
-    payload = json.dumps({k: state.get(k) for k in keys}, sort_keys=True)
-    return hashlib.sha1(payload.encode()).hexdigest()[:10]
-
-
 # ----------------------------------------------------------------------------
-# Cost estimation (rough)
+# Cost estimation (rough — for the live cost meter, not billing)
 # ----------------------------------------------------------------------------
-
-# Approximate $/1K tokens. Surfaced on the cost meter; treat as directional.
+# Per-token rates in USD/1K tokens for each model the demo can use. Pulled
+# from public price lists; treat as directional. The cost meter aggregates
+# generator usage + an approximated judge usage per row.
 COST_PER_1K = {
     "claude-sonnet-4-6": {"in": 0.003, "out": 0.015},
     "claude-opus-4-7":  {"in": 0.015, "out": 0.075},
@@ -91,16 +85,18 @@ def _model_cost(model: str, input_tokens: int, output_tokens: int) -> float:
 # Aggregate / pass-fail helpers (used live)
 # ----------------------------------------------------------------------------
 
+# The four overlapping metrics — both libs name them the same way.
 RAGAS_METRICS = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
-DEEPEVAL_METRICS = RAGAS_METRICS  # same names; differs only by lib prefix in the table
 
 
 def _safe_mean(series: pd.Series) -> float:
+    """Mean ignoring NaN. Returns NaN when the series is fully empty."""
     s = series.dropna()
     return float(s.mean()) if len(s) else float("nan")
 
 
 def _format_aggregates(df: pd.DataFrame, faith_thresh: float, relev_thresh: float) -> dict:
+    """Per-metric averages + pass/total counts for the scorecard row."""
     if df.empty:
         return {}
     out = {}
@@ -115,7 +111,10 @@ def _format_aggregates(df: pd.DataFrame, faith_thresh: float, relev_thresh: floa
 
 
 def _pass_mask(df: pd.DataFrame, faith_thresh: float, relev_thresh: float) -> pd.Series:
-    """Pass when both libs' faithfulness AND answer_relevancy clear the threshold."""
+    """Pass = both libs' faithfulness AND both libs' answer_relevancy clear the
+    threshold. The strictest interpretation — a row only passes if every
+    relevant signal agrees. Re-run on every Streamlit interaction so threshold
+    sliders flip pass/fail badges instantly without re-scoring."""
     if df.empty:
         return pd.Series([], dtype=bool)
     f_ok = (
@@ -190,7 +189,9 @@ with st.sidebar:
     run_clicked = st.button("▶ Run sample", type="primary", use_container_width=True)
     reset_clicked = st.button("Reset / clear cache", use_container_width=True)
 
-# Stash settings on session state for re-binning logic
+# Mirror sidebar state into session_state. The drill-down + threshold-rebinning
+# logic at the bottom of the script reads from session_state so it picks up
+# fresh slider values on every re-run without forcing a re-score.
 for k, v in {
     "sample_size": sample_size, "k_retrieve": k_retrieve, "k_rerank": k_rerank,
     "hybrid": hybrid, "rerank": rerank,
@@ -236,12 +237,17 @@ if run_clicked:
             f"No golden set at {GOLDEN_PATH}. Run `python golden_set.py` first."
         )
     else:
+        # Deterministic sample so the same slider value always picks the same
+        # queries — important for repeatable demos.
         sampled = sample_queries(golden, sample_size, seed=settings.random_seed)
         st.session_state.setdefault("records", {})
         st.session_state.setdefault("reasons", {})
         st.session_state["cost_usd"] = 0.0
 
         with main_placeholder:
+            # st.empty() returns placeholder slots we'll keep overwriting from
+            # the loop. This is what makes the table appear to "stream" — we
+            # render the full DataFrame after every row.
             st.subheader(f"Running {len(sampled)} queries…")
             metrics_box = st.empty()
             table_box = st.empty()
@@ -277,19 +283,29 @@ if run_clicked:
                 st.error(f"Scoring failed on qid={q['query_id']}: {exc}")
                 continue
 
+            # Surface the judge that was actually used (may have fallen back).
             st.session_state["judge_active"] = scored["judge_model_used"]
 
-            # Cost: count generator tokens we tracked + a flat estimate for judge.
+            # ---- Cost meter contribution ----
+            # The generator's token usage is exact (returned by the SDK).
+            # The judge's token usage is approximated because neither Ragas
+            # nor DeepEval expose token counts on their metric objects. We
+            # rule-of-thumb 1 char ≈ 0.25 tokens, multiplied by 4 metrics in
+            # and ~150 tokens out per metric. Use this as a directional
+            # signal for "is this run getting expensive", not for billing.
             gen_usage = record.get("generator_usage", {})
             cost_inc = _model_cost(
                 generator_model,
                 gen_usage.get("input_tokens", 0),
                 gen_usage.get("output_tokens", 0),
             )
-            # Rough judge-cost estimate: each metric run ~ (sum of contexts + answer + reference) * 4 metrics in, ~150 tok out.
-            input_chars = sum(len(c) for c in record["contexts"]) + len(record["answer"]) + len(record["ground_truth"])
-            judge_in_est = int(input_chars / 4) * 4  # 4 metrics
-            judge_out_est = 600  # ~150 per metric
+            input_chars = (
+                sum(len(c) for c in record["contexts"])
+                + len(record["answer"])
+                + len(record["ground_truth"])
+            )
+            judge_in_est = int(input_chars / 4) * 4  # 4 metrics × per-metric input
+            judge_out_est = 600  # ~150 output tokens × 4 metrics
             cost_inc += _model_cost(scored["judge_model_used"], judge_in_est, judge_out_est)
             st.session_state["cost_usd"] = st.session_state.get("cost_usd", 0.0) + cost_inc
 
@@ -308,6 +324,9 @@ if run_clicked:
             }
             st.session_state["records"][q["query_id"]] = record
 
+            # Re-render scorecards + table after each row. The placeholders
+            # (metrics_box, table_box, scatter_box) are overwritten in place,
+            # which is what gives the page its streaming feel.
             df = pd.DataFrame(rows)
             agg = _format_aggregates(df, faith_thresh, relev_thresh)
 
@@ -322,13 +341,15 @@ if run_clicked:
                     )
                 cols[-1].metric("pass / total", f"{agg.get('pass_count', 0)}/{agg.get('total', 0)}")
 
-            # Live table with pass/fail badge
             mask = _pass_mask(df, faith_thresh, relev_thresh)
             df_display = df.copy()
             df_display.insert(2, "pass", mask.map({True: "✅", False: "❌"}))
             table_box.dataframe(df_display, use_container_width=True, hide_index=True)
 
-            # Faithfulness scatter once we have ≥2 rows
+            # Scatter visualises Ragas-vs-DeepEval agreement on faithfulness.
+            # Diagonal dotted line = perfect agreement. Points far from the
+            # line are the disagreement audit — the same queries compare.py's
+            # report calls out as Top-10 disagreements.
             if len(df) >= 2 and "ragas_faithfulness" in df.columns and "deepeval_faithfulness" in df.columns:
                 fig = px.scatter(
                     df,
@@ -349,9 +370,13 @@ if run_clicked:
         st.success(f"Done. {len(rows)} queries scored.")
 
 # ----------------------------------------------------------------------------
-# Drill-down (re-renders on every interaction; threshold sliders re-bin here)
+# Drill-down panel
 # ----------------------------------------------------------------------------
-
+# This block re-renders on every Streamlit interaction (slider move, dropdown
+# select, etc.) using cached scores in st.session_state["last_run"]. That's
+# the trick behind threshold sliders flipping pass/fail badges live without
+# re-running any LLM calls — we just recompute the mask against the existing
+# numeric scores.
 if "last_run" in st.session_state and not st.session_state["last_run"].empty:
     st.divider()
     st.subheader("Per-query drill-down")

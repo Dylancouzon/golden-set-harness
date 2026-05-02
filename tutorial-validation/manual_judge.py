@@ -1,14 +1,15 @@
 """Capture human ratings on a deterministic 10-query slice.
 
-Reads results/eval_records.jsonl, picks the same 10 queries every run (seeded by
-RANDOM_SEED), prints each, and prompts for faithfulness + answer_relevancy on a
-0-1 scale. Press 's' to skip.
+Without human-anchored ratings, the comparison report can only say "the
+libraries disagree by X" — not "library Y was right". This script captures
+a small human ground truth (~10 minutes of work) so the recommendation
+rubric can answer the lead-library question with evidence rather than vibes.
 
-Output: results/manual_ratings.jsonl
+Picks the same 10 queries every run (seeded), prints each, prompts for
+faithfulness + answer_relevancy on a 0-1 scale. 's' to skip.
+
+Output: results/manual_ratings.jsonl, one JSON object per line:
   {"query_id", "faithfulness_human", "answer_relevancy_human"}
-
-This is the validation step that lets compare.py answer "which library is more
-trustworthy?" with evidence rather than vibes.
 """
 from __future__ import annotations
 

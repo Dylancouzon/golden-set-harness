@@ -1,11 +1,19 @@
 """Batch Ragas run over the full golden set.
 
-Caches results/eval_records.jsonl (the generated answers) so eval_deepeval.py
-scores the same artifacts. Writes:
-  results/ragas_per_query.csv
-  results/ragas_scores.json   (aggregates)
+Critical: this script is the *generator* for `results/eval_records.jsonl`,
+which `eval_deepeval.py` then re-scores. Both libraries must score the
+same generated answers — without this caching layer, DeepEval and Ragas
+would each generate their own answers, and any score difference would be
+noise from re-generation rather than judging.
 
-Usage: python eval_ragas.py
+Pipeline:
+  1. Load results/golden_set.jsonl (300 entries from golden_set.py)
+  2. For each, run the pipeline (retrieve + generate). Cache in
+     eval_records.jsonl, append-only so re-runs after a crash skip done work.
+  3. Score each record with Ragas's four standard metrics.
+  4. Write per-query CSV + aggregates JSON.
+
+Usage:  python eval_ragas.py
 """
 from __future__ import annotations
 
@@ -30,7 +38,12 @@ SCORES_PATH = Path(__file__).parent / "results" / "ragas_scores.json"
 
 
 def _generate_records(golden: list[dict]) -> list[dict]:
-    """Generate-and-cache eval records. Reuses cached file if it exists with matching qids."""
+    """Generate eval records, with append-only caching for crash recovery.
+
+    Every row that lands in eval_records.jsonl is final — we never
+    rewrite the file. So if a partial run crashes after 200/300 rows,
+    re-running picks up at row 201 with no wasted spend.
+    """
     cached: dict[str, dict] = {}
     if RECORDS_PATH.exists():
         for line in RECORDS_PATH.read_text().splitlines():
@@ -58,6 +71,9 @@ def _generate_records(golden: list[dict]) -> list[dict]:
                     prompt_template=DEFAULT_PROMPT_TEMPLATE,
                 )
             except Exception as exc:
+                # Skip rather than abort — a single failed generation
+                # shouldn't tank the whole batch. The summary at the end
+                # will show how many actually landed.
                 print(f"  generation failed qid={qid}: {exc}", file=sys.stderr)
                 continue
             rec["query_id"] = qid

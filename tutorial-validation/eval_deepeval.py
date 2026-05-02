@@ -1,9 +1,11 @@
 """Batch DeepEval run over the cached eval_records.jsonl produced by eval_ragas.py.
 
-Reads results/eval_records.jsonl (must exist), scores the same generations with
-DeepEval, writes:
-  results/deepeval_per_query.csv
-  results/deepeval_scores.json
+This script does NOT generate any answers — it only scores. eval_ragas.py
+must run first because it produces the shared eval_records.jsonl. Both
+libraries scoring the same answers is what makes the comparison fair.
+
+Reads:  results/eval_records.jsonl
+Writes: results/deepeval_per_query.csv, results/deepeval_scores.json
 """
 from __future__ import annotations
 

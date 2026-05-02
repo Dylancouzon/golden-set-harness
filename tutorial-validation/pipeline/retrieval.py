@@ -2,6 +2,11 @@
 
 Single entry point: `retrieve(query, k_retrieve, k_rerank, *, hybrid, rerank)`.
 Returns a list of dicts: [{"doc_id", "text", "score"}, ...].
+
+Pipeline shape (when both toggles are on):
+    1. Embed query (dense + BM25 sparse)
+    2. Qdrant query_points with two prefetches + RRF fusion → k_retrieve hits
+    3. Cross-encoder rerank → top k_rerank
 """
 from __future__ import annotations
 
@@ -15,6 +20,11 @@ from sentence_transformers import CrossEncoder
 
 from config import settings
 
+
+# --- Lazy singletons ---------------------------------------------------------
+# Qdrant + OpenAI clients are cheap to construct but we want exactly one of
+# each so connection pools are reused across calls. lru_cache is the simplest
+# way to memoise without adding a class.
 
 @lru_cache(maxsize=1)
 def _qdrant() -> QdrantClient:
@@ -32,28 +42,38 @@ def _openai() -> OpenAI:
 
 @lru_cache(maxsize=1)
 def _sparse_model() -> SparseTextEmbedding:
+    """fastembed BM25 — downloads ~5 MB on first use, then cached on disk."""
     return SparseTextEmbedding(model_name=settings.sparse_model)
 
 
+# Cross-encoder is ~120 MB and slow to load. Only construct it when reranking
+# is actually requested — the demo's "rerank toggle off" path skips this
+# entirely. Module-level None + lazy assignment is simpler than lru_cache here
+# because we want to allow the toggle path to never touch it.
 _reranker: CrossEncoder | None = None
 
 
 def _get_reranker() -> CrossEncoder:
-    """Lazy-load cross-encoder (~120MB) so demo doesn't pay startup when rerank is off."""
     global _reranker
     if _reranker is None:
         _reranker = CrossEncoder(settings.reranker_model)
     return _reranker
 
 
+# --- Embedding helpers (used by ingest.py too) -------------------------------
+
 def embed_dense(text: str) -> list[float]:
+    """OpenAI embedding for a single query string."""
     resp = _openai().embeddings.create(model=settings.dense_model, input=[text])
     return resp.data[0].embedding
 
 
 def embed_sparse(text: str):
+    """BM25 sparse vector. fastembed.embed yields one item per input."""
     return next(_sparse_model().embed([text]))
 
+
+# --- Main entry point --------------------------------------------------------
 
 def retrieve(
     query: str,
@@ -63,7 +83,15 @@ def retrieve(
     hybrid: bool = True,
     rerank: bool = True,
 ) -> list[dict[str, Any]]:
+    """Retrieve k_rerank passages for `query`.
+
+    With `hybrid=True`, runs dense + sparse prefetches and fuses with RRF.
+    With `hybrid=False`, runs dense-only.
+    With `rerank=True`, applies the cross-encoder to the prefetch result.
+    """
     dense_vec = embed_dense(query)
+
+    # Always include a dense prefetch. Sparse is optional.
     prefetch = [models.Prefetch(query=dense_vec, using="dense", limit=k_retrieve)]
 
     if hybrid:
@@ -79,6 +107,10 @@ def retrieve(
             )
         )
 
+    # The hybrid branch uses FusionQuery(RRF) and lets Qdrant fuse the two
+    # prefetches. The dense-only branch skips prefetch entirely and queries
+    # the named "dense" vector directly — that's faster and matches what the
+    # tutorial shows.
     if hybrid:
         results = _qdrant().query_points(
             collection_name=settings.collection,
@@ -97,6 +129,8 @@ def retrieve(
         ).points
 
     if rerank and results:
+        # Cross-encoder scores the (query, passage) pair directly. We sort by
+        # the new score, replacing Qdrant's similarity score in the output.
         pairs = [(query, p.payload["text"]) for p in results]
         scores = _get_reranker().predict(pairs)
         results = [

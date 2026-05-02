@@ -1,4 +1,8 @@
-"""End-to-end one-query function: retrieve → generate → eval record."""
+"""End-to-end one-query function: retrieve → generate → eval record.
+
+This is the integration point between the retrieval and generation modules.
+Returns the dict shape that scoring.py / Streamlit / batch eval all consume.
+"""
 from __future__ import annotations
 
 from typing import Any
@@ -17,6 +21,15 @@ def run_one(
     generator_model: str,
     prompt_template: str,
 ) -> dict[str, Any]:
+    """Run one (query → retrieve → generate) cycle.
+
+    Output keys:
+      - query_text:     the original question
+      - contexts:       list[str] — passage texts only (what the prompt sees)
+      - answer:         str — the generator's response
+      - hits:           list[dict] — full retrieval hits (text, score, doc_id)
+      - generator_usage: token counts for the cost meter
+    """
     hits = retrieve(
         query_text,
         k_retrieve=k_retrieve,

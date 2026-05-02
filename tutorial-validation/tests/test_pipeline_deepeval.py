@@ -1,15 +1,19 @@
 """Pytest-native CI gate using DeepEval's assert_test.
 
-This is the demo of "DeepEval can plug into pytest". Run:
+This file is the most concrete demonstration of why the feature matrix in
+the comparison report calls out 'Pytest-native API: Yes (assert_test)' for
+DeepEval and 'No' for Ragas. With Ragas you'd write a custom test runner;
+with DeepEval, parametrising over records and calling `assert_test` is all
+the boilerplate you need for a real CI gate.
 
-    pytest tests/
+Run:    pytest tests/
 
-Reads results/eval_records.jsonl. If the file doesn't exist, the test is
-skipped — kicks the user to run eval_ragas.py first.
+Reads results/eval_records.jsonl. If the file doesn't exist, every
+parametrised case is skipped (we hit `eval_ragas.py` to populate it).
 
-Threshold defaults to 0.7 on faithfulness and answer_relevancy (matches the
-demo's CI-gate slider defaults). Falls back from settings.judge_model if the
-configured judge isn't available.
+Threshold = 0.7 on faithfulness + answer_relevancy. Matches the demo's
+default CI-gate slider so the same record passing/failing in the live demo
+also passes/fails the test.
 """
 from __future__ import annotations
 
