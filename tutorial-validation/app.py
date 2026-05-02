@@ -154,17 +154,36 @@ st.caption(
 # Sidebar
 with st.sidebar:
     st.header("Pipeline knobs")
-    sample_size = st.slider("Sample size", min_value=10, max_value=300, value=20, step=5)
+    sample_size = st.slider(
+        "Sample size", min_value=10, max_value=300, value=20, step=5,
+        help=(
+            "How many queries to draw from the cached golden set. Sampling is "
+            "deterministic (seed 42), so the same value always picks the same "
+            "subset. 20 ≈ a $1–2 / 10–15 min run; 300 ≈ a $15–25 / 30–45 min run."
+        ),
+    )
 
     generator_model = st.selectbox(
         "Generator model", GENERATOR_CHOICES,
         index=GENERATOR_CHOICES.index(settings.generator_model)
         if settings.generator_model in GENERATOR_CHOICES else 0,
+        help=(
+            "The LLM that produces the RAG answer (the system under test). "
+            "Mini/nano models cut cost ~10x and roughly halve generator wall-clock "
+            "but may be less faithful on hard queries."
+        ),
     )
     judge_model = st.selectbox(
         "Judge model", JUDGE_CHOICES,
         index=JUDGE_CHOICES.index(settings.judge_model)
         if settings.judge_model in JUDGE_CHOICES else 0,
+        help=(
+            "The LLM both eval libraries call to score each sample. Pick a "
+            "DIFFERENT family from the generator to avoid self-judging bias. "
+            "Bigger judges correlate better with humans; mini judges are cheaper "
+            "but noisier. gpt-5-mini/nano are excluded because Ragas's internal "
+            "temperature override breaks them."
+        ),
     )
     if model_family(generator_model) == model_family(judge_model):
         st.warning(
@@ -172,10 +191,41 @@ with st.sidebar:
             "Pick a judge from a different family."
         )
 
-    k_retrieve = st.slider("top_k_retrieve", 10, 100, settings.top_k_retrieve, step=10)
-    k_rerank = st.slider("top_k_rerank", 1, 20, settings.top_k_rerank, step=1)
-    hybrid = st.toggle("Hybrid (dense + sparse RRF)", value=True)
-    rerank = st.toggle("Cross-encoder rerank", value=True)
+    k_retrieve = st.slider(
+        "top_k_retrieve", 10, 100, settings.top_k_retrieve, step=10,
+        help=(
+            "How many candidates Qdrant returns from hybrid search before "
+            "reranking. Higher = better recall (rerank can rescue more), "
+            "slower (cross-encoder pays more). Sweet spot: 50."
+        ),
+    )
+    k_rerank = st.slider(
+        "top_k_rerank", 1, 20, settings.top_k_rerank, step=1,
+        help=(
+            "How many passages survive the cross-encoder and end up in the LLM "
+            "prompt. Lower = cheaper generator, risks 'context doesn't contain "
+            "the answer'. Higher = more grounding, but signal-to-noise drops "
+            "and faithfulness can decrease."
+        ),
+    )
+    hybrid = st.toggle(
+        "Hybrid (dense + sparse RRF)", value=True,
+        help=(
+            "On = dense (OpenAI embedding) + sparse (BM25) prefetches fused with "
+            "Reciprocal Rank Fusion. Off = dense-only. Hybrid usually wins on "
+            "queries with rare or proper-noun terms BM25 catches but the dense "
+            "model misses."
+        ),
+    )
+    rerank = st.toggle(
+        "Cross-encoder rerank", value=True,
+        help=(
+            "On = ms-marco-MiniLM scores each (query, passage) pair directly and "
+            "reorders. Slower but typically a big precision win. Off skips this "
+            "stage and uses the hybrid order — cheaper and avoids the 120 MB "
+            "model download if you're on a fresh checkout."
+        ),
+    )
 
     st.divider()
     st.subheader("HNSW tuning (dense vector)")
@@ -186,30 +236,70 @@ with st.sidebar:
     )
     search_hnsw_ef = st.slider(
         "search_hnsw_ef (per-query)", 16, 512, settings.search_hnsw_ef, step=16,
-        help="Search-time HNSW candidate breadth. Higher = better recall, slower queries.",
+        help=(
+            "Search-time HNSW candidate breadth — how many graph nodes to "
+            "consider during a single query. Higher = better recall, slower "
+            "queries. Free to change per call (no re-index)."
+        ),
     )
     hnsw_m = st.slider(
         "m (graph degree)", 4, 64, settings.hnsw_m, step=2,
-        help="Outgoing edges per node. Higher = better recall, more RAM.",
+        help=(
+            "HNSW edges per node. Higher = denser graph = better recall but "
+            "more RAM and slower ingest/re-index. Build-time: changes require "
+            "Apply (which triggers an in-place rebuild)."
+        ),
     )
     hnsw_ef_construct = st.slider(
         "ef_construct (build breadth)", 32, 512, settings.hnsw_ef_construct, step=16,
-        help="Candidate pool when adding nodes. Higher = better graph, slower ingest/re-index.",
+        help=(
+            "Candidate pool when adding nodes during graph construction. Higher "
+            "= better graph quality, slower to build. Build-time: changes "
+            "require Apply."
+        ),
     )
-    apply_hnsw = st.button("Apply HNSW config", use_container_width=True)
+    apply_hnsw = st.button(
+        "Apply HNSW config", use_container_width=True,
+        help=(
+            "Sends the new m / ef_construct to Qdrant via update_collection. "
+            "Qdrant rebuilds the dense vector's HNSW graph in place — no "
+            "re-embed cost. Status panel below tracks the rebuild "
+            "(green → yellow → green)."
+        ),
+    )
     hnsw_status_box = st.empty()
 
     st.divider()
     st.subheader("CI gate thresholds")
     st.caption("Sliders re-bin existing scores live — no re-scoring.")
-    faith_thresh = st.slider("Faithfulness threshold", 0.0, 1.0, 0.7, step=0.05)
-    relev_thresh = st.slider("Answer-relevancy threshold", 0.0, 1.0, 0.7, step=0.05)
+    faith_thresh = st.slider(
+        "Faithfulness threshold", 0.0, 1.0, 0.7, step=0.05,
+        help=(
+            "A row PASSES only if both Ragas faithfulness AND DeepEval "
+            "faithfulness clear this bar. Moving the slider re-bins existing "
+            "scores instantly — no LLM calls. This is the live CI-gate demo."
+        ),
+    )
+    relev_thresh = st.slider(
+        "Answer-relevancy threshold", 0.0, 1.0, 0.7, step=0.05,
+        help=(
+            "Same idea as faithfulness threshold but for answer_relevancy. "
+            "Both metrics gate pass/fail; raising either tightens the gate."
+        ),
+    )
 
     st.divider()
     st.subheader("Prompt template")
     prompt_template = st.text_area(
         "PROMPT_TEMPLATE", value=DEFAULT_PROMPT_TEMPLATE, height=180,
-        help="The grounding prompt. Must contain {retrieved_context} and {query_text}.",
+        help=(
+            "The grounding prompt sent to the generator. MUST contain the "
+            "literal placeholders {retrieved_context} and {query_text} — "
+            "those get filled in per query. Editing this changes what the "
+            "generator sees, which changes the answer, which changes the "
+            "scores. Watch faithfulness if you loosen the 'use only the "
+            "context' instruction."
+        ),
     )
 
     st.subheader("G-Eval custom criterion (DeepEval only)")
@@ -218,10 +308,30 @@ with st.sidebar:
         value="",
         placeholder="Every numerical claim in the answer must be supported by a specific quoted span from the retrieved context.",
         height=120,
+        help=(
+            "DeepEval-only: write a natural-language pass/fail rule (e.g. 'no "
+            "made-up dollar amounts'). DeepEval's G-Eval metric asks the judge "
+            "to apply this criterion as a custom score on every sample. Leave "
+            "blank to skip. This is the headline DeepEval differentiator — "
+            "Ragas has no equivalent."
+        ),
     )
 
-    run_clicked = st.button("▶ Run sample", type="primary", use_container_width=True)
-    reset_clicked = st.button("Reset / clear cache", use_container_width=True)
+    run_clicked = st.button(
+        "▶ Run sample", type="primary", use_container_width=True,
+        help=(
+            "Execute the pipeline + scoring on N queries with the current "
+            "config. Per-query scores stream into the table as they finish."
+        ),
+    )
+    reset_clicked = st.button(
+        "Reset / clear cache", use_container_width=True,
+        help=(
+            "Clears the in-session record cache, the cost meter, and "
+            "Streamlit's @cache_data. Use this when you want to re-load the "
+            "golden set after editing it on disk, or zero out the cost meter."
+        ),
+    )
 
 # Mirror sidebar state into session_state. The drill-down + threshold-rebinning
 # logic at the bottom of the script reads from session_state so it picks up
