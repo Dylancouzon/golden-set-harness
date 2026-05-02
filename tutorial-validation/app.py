@@ -1,0 +1,410 @@
+"""Live demo: Ragas vs DeepEval on a production-shaped RAG pipeline.
+
+Run: streamlit run app.py
+
+Sidebar knobs let the presenter tweak the pipeline (prompt, k, hybrid/rerank,
+generator/judge models, thresholds, custom G-Eval criterion). Per-query scores
+stream into the table as they finish; threshold sliders re-bin without re-scoring;
+the drill-down panel surfaces judge reasoning side by side.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+import random
+import time
+from pathlib import Path
+
+import pandas as pd
+import plotly.express as px
+import streamlit as st
+
+from config import (
+    DEFAULT_PROMPT_TEMPLATE,
+    GENERATOR_CHOICES,
+    JUDGE_CHOICES,
+    model_family,
+    settings,
+)
+from pipeline.pipeline import run_one
+from pipeline.scoring import score_both_parallel
+
+GOLDEN_PATH = Path(__file__).parent / "results" / "golden_set.jsonl"
+
+# ----------------------------------------------------------------------------
+# Data loading
+# ----------------------------------------------------------------------------
+
+@st.cache_data(show_spinner=False)
+def load_golden_set() -> list[dict]:
+    if not GOLDEN_PATH.exists():
+        return []
+    return [json.loads(line) for line in GOLDEN_PATH.read_text().splitlines() if line.strip()]
+
+
+def sample_queries(golden: list[dict], n: int, seed: int) -> list[dict]:
+    rng = random.Random(seed)
+    pool = list(golden)
+    rng.shuffle(pool)
+    return pool[: min(n, len(pool))]
+
+
+def _settings_hash(state: dict) -> str:
+    keys = [
+        "k_retrieve", "k_rerank", "hybrid", "rerank",
+        "generator_model", "judge_model", "prompt_template",
+        "geval_criterion",
+    ]
+    payload = json.dumps({k: state.get(k) for k in keys}, sort_keys=True)
+    return hashlib.sha1(payload.encode()).hexdigest()[:10]
+
+
+# ----------------------------------------------------------------------------
+# Cost estimation (rough)
+# ----------------------------------------------------------------------------
+
+# Approximate $/1K tokens. Surfaced on the cost meter; treat as directional.
+COST_PER_1K = {
+    "claude-sonnet-4-6": {"in": 0.003, "out": 0.015},
+    "claude-opus-4-7":  {"in": 0.015, "out": 0.075},
+    "claude-sonnet":     {"in": 0.003, "out": 0.015},
+    "gpt-5.4":           {"in": 0.005, "out": 0.015},
+    "gpt-4o":            {"in": 0.005, "out": 0.015},
+    "gpt-4o-mini":       {"in": 0.00015, "out": 0.0006},
+}
+
+
+def _model_cost(model: str, input_tokens: int, output_tokens: int) -> float:
+    rates = COST_PER_1K.get(model)
+    if rates is None:
+        for prefix, r in COST_PER_1K.items():
+            if model.startswith(prefix):
+                rates = r
+                break
+    if rates is None:
+        return 0.0
+    return (input_tokens / 1000.0) * rates["in"] + (output_tokens / 1000.0) * rates["out"]
+
+
+# ----------------------------------------------------------------------------
+# Aggregate / pass-fail helpers (used live)
+# ----------------------------------------------------------------------------
+
+RAGAS_METRICS = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
+DEEPEVAL_METRICS = RAGAS_METRICS  # same names; differs only by lib prefix in the table
+
+
+def _safe_mean(series: pd.Series) -> float:
+    s = series.dropna()
+    return float(s.mean()) if len(s) else float("nan")
+
+
+def _format_aggregates(df: pd.DataFrame, faith_thresh: float, relev_thresh: float) -> dict:
+    if df.empty:
+        return {}
+    out = {}
+    for m in RAGAS_METRICS:
+        out[f"ragas_{m}"] = _safe_mean(df.get(f"ragas_{m}", pd.Series(dtype=float)))
+        out[f"deepeval_{m}"] = _safe_mean(df.get(f"deepeval_{m}", pd.Series(dtype=float)))
+    if "deepeval_g_eval_custom" in df.columns:
+        out["deepeval_g_eval_custom"] = _safe_mean(df["deepeval_g_eval_custom"])
+    out["pass_count"] = int(_pass_mask(df, faith_thresh, relev_thresh).sum())
+    out["total"] = int(len(df))
+    return out
+
+
+def _pass_mask(df: pd.DataFrame, faith_thresh: float, relev_thresh: float) -> pd.Series:
+    """Pass when both libs' faithfulness AND answer_relevancy clear the threshold."""
+    if df.empty:
+        return pd.Series([], dtype=bool)
+    f_ok = (
+        (df.get("ragas_faithfulness", 0).fillna(0) >= faith_thresh)
+        & (df.get("deepeval_faithfulness", 0).fillna(0) >= faith_thresh)
+    )
+    r_ok = (
+        (df.get("ragas_answer_relevancy", 0).fillna(0) >= relev_thresh)
+        & (df.get("deepeval_answer_relevancy", 0).fillna(0) >= relev_thresh)
+    )
+    return f_ok & r_ok
+
+
+# ----------------------------------------------------------------------------
+# UI
+# ----------------------------------------------------------------------------
+
+st.set_page_config(page_title="Ragas vs DeepEval — live", layout="wide")
+st.title("Ragas vs DeepEval — live RAG eval")
+st.caption(
+    "Hybrid Qdrant retrieval (dense + sparse + RRF) → cross-encoder rerank → "
+    "Claude generator → both eval libraries score the same samples in parallel."
+)
+
+# Sidebar
+with st.sidebar:
+    st.header("Pipeline knobs")
+    sample_size = st.slider("Sample size", min_value=10, max_value=300, value=20, step=5)
+
+    generator_model = st.selectbox(
+        "Generator model", GENERATOR_CHOICES,
+        index=GENERATOR_CHOICES.index(settings.generator_model)
+        if settings.generator_model in GENERATOR_CHOICES else 0,
+    )
+    judge_model = st.selectbox(
+        "Judge model", JUDGE_CHOICES,
+        index=JUDGE_CHOICES.index(settings.judge_model)
+        if settings.judge_model in JUDGE_CHOICES else 0,
+    )
+    if model_family(generator_model) == model_family(judge_model):
+        st.warning(
+            "Same model family — self-judging contamination risk. "
+            "Pick a judge from a different family."
+        )
+
+    k_retrieve = st.slider("top_k_retrieve", 10, 100, settings.top_k_retrieve, step=10)
+    k_rerank = st.slider("top_k_rerank", 1, 20, settings.top_k_rerank, step=1)
+    hybrid = st.toggle("Hybrid (dense + sparse RRF)", value=True)
+    rerank = st.toggle("Cross-encoder rerank", value=True)
+
+    st.divider()
+    st.subheader("CI gate thresholds")
+    st.caption("Sliders re-bin existing scores live — no re-scoring.")
+    faith_thresh = st.slider("Faithfulness threshold", 0.0, 1.0, 0.7, step=0.05)
+    relev_thresh = st.slider("Answer-relevancy threshold", 0.0, 1.0, 0.7, step=0.05)
+
+    st.divider()
+    st.subheader("Prompt template")
+    prompt_template = st.text_area(
+        "PROMPT_TEMPLATE", value=DEFAULT_PROMPT_TEMPLATE, height=180,
+        help="The grounding prompt. Must contain {retrieved_context} and {query_text}.",
+    )
+
+    st.subheader("G-Eval custom criterion (DeepEval only)")
+    geval_criterion = st.text_area(
+        "When set, adds a g_eval_custom column on the next run.",
+        value="",
+        placeholder="Every numerical claim in the answer must be supported by a specific quoted span from the retrieved context.",
+        height=120,
+    )
+
+    run_clicked = st.button("▶ Run sample", type="primary", use_container_width=True)
+    reset_clicked = st.button("Reset / clear cache", use_container_width=True)
+
+# Stash settings on session state for re-binning logic
+for k, v in {
+    "sample_size": sample_size, "k_retrieve": k_retrieve, "k_rerank": k_rerank,
+    "hybrid": hybrid, "rerank": rerank,
+    "generator_model": generator_model, "judge_model": judge_model,
+    "prompt_template": prompt_template, "geval_criterion": geval_criterion,
+    "faith_thresh": faith_thresh, "relev_thresh": relev_thresh,
+}.items():
+    st.session_state[k] = v
+
+if reset_clicked:
+    for k in ["last_run", "records", "reasons", "cost_usd", "judge_active"]:
+        st.session_state.pop(k, None)
+    st.cache_data.clear()
+    st.success("Caches cleared. Click Run sample.")
+
+# Sidebar cost meter (rendered after the run loop updates session state)
+cost_placeholder = st.sidebar.empty()
+judge_placeholder = st.sidebar.empty()
+
+
+def _render_cost_meter():
+    cost = st.session_state.get("cost_usd", 0.0)
+    cost_placeholder.metric("Approx. cost (this session)", f"${cost:.3f}")
+    judge = st.session_state.get("judge_active") or judge_model
+    if judge != judge_model:
+        judge_placeholder.warning(f"Active judge: **{judge}** (fell back from {judge_model})")
+    else:
+        judge_placeholder.info(f"Active judge: **{judge}**")
+
+
+_render_cost_meter()
+
+# ----------------------------------------------------------------------------
+# Main run loop
+# ----------------------------------------------------------------------------
+
+main_placeholder = st.container()
+
+if run_clicked:
+    golden = load_golden_set()
+    if not golden:
+        st.error(
+            f"No golden set at {GOLDEN_PATH}. Run `python golden_set.py` first."
+        )
+    else:
+        sampled = sample_queries(golden, sample_size, seed=settings.random_seed)
+        st.session_state.setdefault("records", {})
+        st.session_state.setdefault("reasons", {})
+        st.session_state["cost_usd"] = 0.0
+
+        with main_placeholder:
+            st.subheader(f"Running {len(sampled)} queries…")
+            metrics_box = st.empty()
+            table_box = st.empty()
+            scatter_box = st.empty()
+            progress = st.progress(0.0)
+
+        rows: list[dict] = []
+        for i, q in enumerate(sampled):
+            try:
+                record = run_one(
+                    q["query_text"],
+                    k_retrieve=k_retrieve,
+                    k_rerank=k_rerank,
+                    hybrid=hybrid,
+                    rerank=rerank,
+                    generator_model=generator_model,
+                    prompt_template=prompt_template,
+                )
+            except Exception as exc:
+                st.error(f"Pipeline failed on qid={q['query_id']}: {exc}")
+                continue
+
+            record["ground_truth"] = q["ground_truth"]
+            record["query_id"] = q["query_id"]
+
+            try:
+                scored = score_both_parallel(
+                    record,
+                    judge_model=judge_model,
+                    custom_geval_criterion=(geval_criterion.strip() or None),
+                )
+            except Exception as exc:
+                st.error(f"Scoring failed on qid={q['query_id']}: {exc}")
+                continue
+
+            st.session_state["judge_active"] = scored["judge_model_used"]
+
+            # Cost: count generator tokens we tracked + a flat estimate for judge.
+            gen_usage = record.get("generator_usage", {})
+            cost_inc = _model_cost(
+                generator_model,
+                gen_usage.get("input_tokens", 0),
+                gen_usage.get("output_tokens", 0),
+            )
+            # Rough judge-cost estimate: each metric run ~ (sum of contexts + answer + reference) * 4 metrics in, ~150 tok out.
+            input_chars = sum(len(c) for c in record["contexts"]) + len(record["answer"]) + len(record["ground_truth"])
+            judge_in_est = int(input_chars / 4) * 4  # 4 metrics
+            judge_out_est = 600  # ~150 per metric
+            cost_inc += _model_cost(scored["judge_model_used"], judge_in_est, judge_out_est)
+            st.session_state["cost_usd"] = st.session_state.get("cost_usd", 0.0) + cost_inc
+
+            row = {
+                "query_id": q["query_id"],
+                "query": q["query_text"][:80],
+                **{f"ragas_{k}": v for k, v in scored["ragas"]["scores"].items()},
+                **{f"deepeval_{k}": v for k, v in scored["deepeval"]["scores"].items()},
+                "wall_seconds": scored["wall_seconds"],
+            }
+            rows.append(row)
+
+            st.session_state["reasons"][q["query_id"]] = {
+                "ragas": scored["ragas"]["reasons"],
+                "deepeval": scored["deepeval"]["reasons"],
+            }
+            st.session_state["records"][q["query_id"]] = record
+
+            df = pd.DataFrame(rows)
+            agg = _format_aggregates(df, faith_thresh, relev_thresh)
+
+            with metrics_box.container():
+                cols = st.columns(min(5, len(RAGAS_METRICS) + 1))
+                for j, m in enumerate(RAGAS_METRICS):
+                    delta = (agg.get(f"ragas_{m}", 0) or 0) - (agg.get(f"deepeval_{m}", 0) or 0)
+                    cols[j].metric(
+                        m,
+                        f"R {agg.get(f'ragas_{m}', 0):.2f} / D {agg.get(f'deepeval_{m}', 0):.2f}",
+                        f"{delta:+.2f}",
+                    )
+                cols[-1].metric("pass / total", f"{agg.get('pass_count', 0)}/{agg.get('total', 0)}")
+
+            # Live table with pass/fail badge
+            mask = _pass_mask(df, faith_thresh, relev_thresh)
+            df_display = df.copy()
+            df_display.insert(2, "pass", mask.map({True: "✅", False: "❌"}))
+            table_box.dataframe(df_display, use_container_width=True, hide_index=True)
+
+            # Faithfulness scatter once we have ≥2 rows
+            if len(df) >= 2 and "ragas_faithfulness" in df.columns and "deepeval_faithfulness" in df.columns:
+                fig = px.scatter(
+                    df,
+                    x="ragas_faithfulness",
+                    y="deepeval_faithfulness",
+                    hover_data=["query_id", "query"],
+                    title="Faithfulness: Ragas vs DeepEval (per query)",
+                    range_x=[0, 1],
+                    range_y=[0, 1],
+                )
+                fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=1, line=dict(dash="dot"))
+                scatter_box.plotly_chart(fig, use_container_width=True)
+
+            progress.progress((i + 1) / len(sampled))
+            _render_cost_meter()
+
+        st.session_state["last_run"] = pd.DataFrame(rows)
+        st.success(f"Done. {len(rows)} queries scored.")
+
+# ----------------------------------------------------------------------------
+# Drill-down (re-renders on every interaction; threshold sliders re-bin here)
+# ----------------------------------------------------------------------------
+
+if "last_run" in st.session_state and not st.session_state["last_run"].empty:
+    st.divider()
+    st.subheader("Per-query drill-down")
+    df = st.session_state["last_run"].copy()
+    mask = _pass_mask(df, faith_thresh, relev_thresh)
+    df.insert(2, "pass", mask.map({True: "✅", False: "❌"}))
+    st.dataframe(df, use_container_width=True, hide_index=True)
+
+    qids = df["query_id"].tolist()
+    selected = st.selectbox("Inspect query", qids, index=0)
+    full_record = st.session_state["records"].get(selected)
+    reasons = st.session_state["reasons"].get(selected, {"ragas": {}, "deepeval": {}})
+    row = df.set_index("query_id").loc[selected]
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.subheader("Question")
+        st.write(full_record["query_text"])
+        st.subheader("Retrieved contexts")
+        for i, c in enumerate(full_record["contexts"]):
+            with st.expander(f"Chunk {i + 1}"):
+                st.write(c)
+        st.subheader("Generated answer")
+        st.write(full_record["answer"])
+        st.subheader("Reference answer")
+        st.write(full_record["ground_truth"])
+
+    with col2:
+        st.subheader("Side-by-side scores + judge reasoning")
+        for metric in RAGAS_METRICS:
+            st.markdown(f"**{metric}**")
+            mc1, mc2 = st.columns(2)
+            with mc1:
+                rval = row.get(f"ragas_{metric}", float("nan"))
+                st.metric("Ragas", f"{rval:.2f}" if not (rval is None or math.isnan(rval)) else "—")
+                with st.expander("Ragas judge reasoning"):
+                    st.write(reasons.get("ragas", {}).get(metric) or "(none)")
+            with mc2:
+                dval = row.get(f"deepeval_{metric}", float("nan"))
+                st.metric("DeepEval", f"{dval:.2f}" if not (dval is None or math.isnan(dval)) else "—")
+                with st.expander("DeepEval judge reasoning"):
+                    st.write(reasons.get("deepeval", {}).get(metric) or "(none)")
+
+        if "deepeval_g_eval_custom" in df.columns:
+            st.markdown("**G-Eval custom criterion (DeepEval only)**")
+            gv = row.get("deepeval_g_eval_custom", float("nan"))
+            st.metric("g_eval_custom", f"{gv:.2f}" if not (gv is None or math.isnan(gv)) else "—")
+            with st.expander("G-Eval reasoning"):
+                st.write(reasons.get("deepeval", {}).get("g_eval_custom") or "(none)")
+
+elif not run_clicked:
+    st.info(
+        "Set knobs in the sidebar, then click **▶ Run sample**.\n\n"
+        "The sample is drawn deterministically (seed 42) from the cached "
+        "`results/golden_set.jsonl`."
+    )
