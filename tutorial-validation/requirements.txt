@@ -4,6 +4,11 @@ fastembed>=0.4
 openai>=1.50
 anthropic>=0.40
 sentence-transformers>=3.0
+# torchvision isn't used at runtime — it's pulled in to satisfy
+# transformers' lazy image-processor imports during Streamlit's hot-reload
+# watcher walk. Without it, every Streamlit run dumps ModuleNotFoundError
+# tracebacks for vit/yolos/zoedepth/vitmatte/vivit. Cheap (~2 MB wheel).
+torchvision>=0.20
 datasets>=3.0
 ragas>=0.2
 deepeval>=2.0
